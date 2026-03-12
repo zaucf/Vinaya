@@ -1,0 +1,798 @@
+{
+  "vinaya-31be775b0679": {
+    "request_id": "vinaya-31be775b0679",
+    "report": {
+      "request": {
+        "requestId": "vinaya-31be775b0679",
+        "title": "持久化验证请求",
+        "requestText": "验证 JSON 持久化是否生效。",
+        "domain": "system-test",
+        "riskLevel": "medium",
+        "context": "需要确认重启后仍可读取。"
+      },
+      "intention": {
+        "primaryIntent": "持久化验证请求",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "medium"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "medium"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "小范围试行并记录反馈",
+          "scope": "限制在单一场景或沙盒环境",
+          "reviewAt": "2026-03-14T07:42:05.966076+00:00",
+          "rollbackCondition": "出现误伤、投诉或关键指标下降时立即回退",
+          "humanOwner": "ops-review-owner"
+        },
+        "releaseRisk": "medium"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 medium 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-e4848a91060d": {
+    "request_id": "vinaya-e4848a91060d",
+    "report": {
+      "request": {
+        "requestId": "vinaya-e4848a91060d",
+        "title": "123",
+        "requestText": "123",
+        "domain": "content-moderation",
+        "riskLevel": "medium",
+        "context": "123"
+      },
+      "intention": {
+        "primaryIntent": "123",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "medium"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "medium"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "小范围试行并记录反馈",
+          "scope": "限制在单一场景或沙盒环境",
+          "reviewAt": "2026-03-15T03:20:38.721067+00:00",
+          "rollbackCondition": "出现误伤、投诉或关键指标下降时立即回退",
+          "humanOwner": "ops-review-owner"
+        },
+        "releaseRisk": "medium"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 medium 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-1f7ad33d33bb": {
+    "request_id": "vinaya-1f7ad33d33bb",
+    "report": {
+      "request": {
+        "requestId": "vinaya-1f7ad33d33bb",
+        "title": "1+1一定是等于2",
+        "requestText": "真的吗",
+        "domain": "content-moderation",
+        "riskLevel": "medium",
+        "context": "不保真"
+      },
+      "intention": {
+        "primaryIntent": "1+1一定是等于2",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "medium"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "medium"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "小范围试行并记录反馈",
+          "scope": "限制在单一场景或沙盒环境",
+          "reviewAt": "2026-03-15T03:21:26.046971+00:00",
+          "rollbackCondition": "出现误伤、投诉或关键指标下降时立即回退",
+          "humanOwner": "ops-review-owner"
+        },
+        "releaseRisk": "medium"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 medium 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-b642d155d04f": {
+    "request_id": "vinaya-b642d155d04f",
+    "report": {
+      "request": {
+        "requestId": "vinaya-b642d155d04f",
+        "title": "什么是好东西",
+        "requestText": "123",
+        "domain": "content-moderation",
+        "riskLevel": "medium",
+        "context": "123"
+      },
+      "intention": {
+        "primaryIntent": "什么是好东西",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "medium"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "medium"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "小范围试行并记录反馈",
+          "scope": "限制在单一场景或沙盒环境",
+          "reviewAt": "2026-03-15T06:32:17.603889+00:00",
+          "rollbackCondition": "出现误伤、投诉或关键指标下降时立即回退",
+          "humanOwner": "ops-review-owner"
+        },
+        "releaseRisk": "medium"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 medium 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-71a248f78d26": {
+    "request_id": "vinaya-71a248f78d26",
+    "report": {
+      "request": {
+        "requestId": "vinaya-71a248f78d26",
+        "requestModelId": "risk_review_v1",
+        "title": "test",
+        "requestText": "check request model flow",
+        "domain": "risk-review",
+        "riskLevel": "high",
+        "context": "ctx"
+      },
+      "intention": {
+        "primaryIntent": "test",
+        "mixedMotives": [
+          "快速降低风险暴露",
+          "缩短人工处理时间"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "high"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "误判会扩大影响面",
+          "可能带来不可回退后果"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "warning",
+            "reason": "高风险请求必须保留人工主权。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.95
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "进入人工复核队列并冻结自动执行",
+          "scope": "仅生成建议，不触发真实动作",
+          "reviewAt": "2026-03-13T06:38:51.283381+00:00",
+          "rollbackCondition": "人工认定风险过高或信息不足时停止推进",
+          "humanOwner": "human-review-owner"
+        },
+        "releaseRisk": "high"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 high 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-8b427839cda1": {
+    "request_id": "vinaya-8b427839cda1",
+    "report": {
+      "request": {
+        "requestId": "vinaya-8b427839cda1",
+        "requestModelId": "risk_review_v1",
+        "title": "test title",
+        "requestText": "check 500 issue",
+        "domain": "risk-review",
+        "riskLevel": "high",
+        "context": "ctx"
+      },
+      "intention": {
+        "primaryIntent": "test title",
+        "mixedMotives": [
+          "快速降低风险暴露",
+          "缩短人工处理时间"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "high"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "误判会扩大影响面",
+          "可能带来不可回退后果"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "warning",
+            "reason": "高风险请求必须保留人工主权。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.95
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "进入人工复核队列并冻结自动执行",
+          "scope": "仅生成建议，不触发真实动作",
+          "reviewAt": "2026-03-13T07:03:08.801994+00:00",
+          "rollbackCondition": "人工认定风险过高或信息不足时停止推进",
+          "humanOwner": "human-review-owner"
+        },
+        "releaseRisk": "high"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 high 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-652c6eb62468": {
+    "request_id": "vinaya-652c6eb62468",
+    "report": {
+      "request": {
+        "requestId": "vinaya-652c6eb62468",
+        "requestModelId": "risk_review_v1",
+        "title": "评估高影响动作是否应进入人工复核？？",
+        "requestText": "大概是这样的",
+        "domain": "risk-review",
+        "riskLevel": "high",
+        "context": "没了"
+      },
+      "intention": {
+        "primaryIntent": "评估高影响动作是否应进入人工复核？？",
+        "mixedMotives": [
+          "快速降低风险暴露",
+          "缩短人工处理时间"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "high"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "误判会扩大影响面",
+          "可能带来不可回退后果"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "warning",
+            "reason": "高风险请求必须保留人工主权。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.95
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "进入人工复核队列并冻结自动执行",
+          "scope": "仅生成建议，不触发真实动作",
+          "reviewAt": "2026-03-13T07:04:48.108786+00:00",
+          "rollbackCondition": "人工认定风险过高或信息不足时停止推进",
+          "humanOwner": "human-review-owner"
+        },
+        "releaseRisk": "high"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 high 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-33632e2691b1": {
+    "request_id": "vinaya-33632e2691b1",
+    "report": {
+      "request": {
+        "requestId": "vinaya-33632e2691b1",
+        "requestModelId": "risk_review_v1",
+        "title": "评估高影响动作是否应进入人工复核？？",
+        "requestText": "大概是这样的",
+        "domain": "risk-review",
+        "riskLevel": "high",
+        "context": "没了"
+      },
+      "intention": {
+        "primaryIntent": "评估高影响动作是否应进入人工复核？？",
+        "mixedMotives": [
+          "快速降低风险暴露",
+          "缩短人工处理时间"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "high"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "误判会扩大影响面",
+          "可能带来不可回退后果"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "warning",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "warning",
+            "reason": "高风险请求必须保留人工主权。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.95
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "进入人工复核队列并冻结自动执行",
+          "scope": "仅生成建议，不触发真实动作",
+          "reviewAt": "2026-03-13T07:04:50.439445+00:00",
+          "rollbackCondition": "人工认定风险过高或信息不足时停止推进",
+          "humanOwner": "human-review-owner"
+        },
+        "releaseRisk": "high"
+      },
+      "decision": "defer",
+      "reasoningSummary": "综合判断为 high 风险，建议缓行并保留人工复核。"
+    }
+  }
+}

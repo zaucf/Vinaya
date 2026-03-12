@@ -1,0 +1,9 @@
+{
+  "name": "@vinaya/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010",
+    "start": "python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010"
+  }
+}

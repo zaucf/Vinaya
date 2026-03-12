@@ -1,0 +1,65 @@
+{
+  "README.md": [
+    {
+      "id": "notebook-1773212774887_ceaaj2k7t",
+      "filePath": "README.md",
+      "note": "Vinaya has shifted to a Python-backend architecture: keep FastAPI in apps/api and Python engine code in packages/engine/vinaya_engine; do not reintroduce the removed root Next app or Node API server.",
+      "createdAt": "2026-03-11T15:06:14.887",
+      "updatedAt": "2026-03-11T15:06:14.887"
+    }
+  ],
+  "apps/api/vinaya_api/repository.py": [
+    {
+      "id": "notebook-1773214939475_e65xfrvv7",
+      "filePath": "apps/api/vinaya_api/repository.py",
+      "note": "Request reports now persist to data/request-reports.json via UTF-8 JSON; keep RequestReportResponse.model_dump()/model_validate symmetry when changing schema or reads will break.",
+      "createdAt": "2026-03-11T15:42:19.475",
+      "updatedAt": "2026-03-11T15:42:19.475"
+    }
+  ],
+  "docs/vinaya-mvp-prd-v0.1.md": [
+    {
+      "id": "notebook-1773215674894_v4cpuo9gr",
+      "filePath": "docs/vinaya-mvp-prd-v0.1.md",
+      "note": "Current implementation matches MVP core loop (submit request -> generate report -> view detail -> view history) but human review and explicit ledger UI are still missing; keep future work aligned with PRD sections 9 and 10.",
+      "createdAt": "2026-03-11T15:54:34.894",
+      "updatedAt": "2026-03-11T15:54:34.894"
+    }
+  ],
+  "apps/api/vinaya_api/schemas.py": [
+    {
+      "id": "notebook-1773299053284_9md0i0gyb",
+      "filePath": "apps/api/vinaya_api/schemas.py",
+      "note": "CreateRequestPayload 必须与前端 POST /api/requests 的 JSON 字段保持一致；缺少 title 会让 requests.create_request 在 payload.title 处抛 AttributeError 并直接导致 500。",
+      "createdAt": "2026-03-12T15:04:13.284",
+      "updatedAt": "2026-03-12T15:04:13.284"
+    }
+  ],
+  "apps/api/vinaya_api/services/requests.py": [
+    {
+      "id": "notebook-1773299607815_e0dyloq02",
+      "filePath": "apps/api/vinaya_api/services/requests.py",
+      "note": "默认已切到 LLM 引擎；若未配置有效 API key，POST /api/requests 会走 main.py 中的异常映射返回 503/502，而不是再静默回退到 mock 规则。仅在显式设置 VINAYA_USE_MOCK_ENGINE=true 时才使用旧规则引擎。",
+      "createdAt": "2026-03-12T15:13:27.815",
+      "updatedAt": "2026-03-12T15:13:27.815"
+    }
+  ],
+  "apps/api/vinaya_api/llm.py": [
+    {
+      "id": "notebook-1773300454101_60lezantb",
+      "filePath": "apps/api/vinaya_api/llm.py",
+      "note": "LLM 设置已改为优先读取 llm-providers.json 中启用且 is_default=true 的 provider，再按 provider.api_key_env 去环境变量取 key；切换模型中心默认 provider 会直接影响 POST /api/requests 的实际推理目标。 ",
+      "createdAt": "2026-03-12T15:27:34.101",
+      "updatedAt": "2026-03-12T15:27:34.101"
+    }
+  ],
+  "apps/api/vinaya_api/services/llm_providers.py": [
+    {
+      "id": "notebook-1773300974127_twuneyqbh",
+      "filePath": "apps/api/vinaya_api/services/llm_providers.py",
+      "note": "test_llm_provider_connection() 当前用最小 chat/completions 请求做探活，返回 ok/message 给前端展示；401/网络失败都作为业务可见测试结果返回，而不是抛成 500。",
+      "createdAt": "2026-03-12T15:36:14.127",
+      "updatedAt": "2026-03-12T15:36:14.127"
+    }
+  ]
+}

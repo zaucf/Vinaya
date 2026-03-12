@@ -1,0 +1,15 @@
+{
+  "name": "vinaya-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @vinaya/web",
+    "build": "npm run build --workspace @vinaya/web",
+    "lint": "npm run lint --workspace @vinaya/web",
+    "api:dev": "python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010"
+  }
+}

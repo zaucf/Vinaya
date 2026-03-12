@@ -1,0 +1,7 @@
+{
+  "alwaysApprovedTools": [
+    "websearch-fetch",
+    "websearch-search",
+    "filesystem-read"
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules
+.next
+dist
+out
+.env*
+coverage
+*.log
+apps/*/.next
+apps/*/node_modules
+packages/*/node_modules

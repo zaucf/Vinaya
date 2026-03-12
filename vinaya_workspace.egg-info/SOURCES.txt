@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+vinaya_workspace.egg-info/PKG-INFO
+vinaya_workspace.egg-info/SOURCES.txt
+vinaya_workspace.egg-info/dependency_links.txt
+vinaya_workspace.egg-info/requires.txt
+vinaya_workspace.egg-info/top_level.txt
