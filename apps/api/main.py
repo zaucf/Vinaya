@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.vinaya_api.llm import LLMConfigurationError, LLMRequestError
 from apps.api.vinaya_api.schemas import (
+    ConfessionListResponse,
     CreateLLMProviderPayload,
     CreateRequestModelPayload,
     CreateRequestPayload,
@@ -14,8 +15,10 @@ from apps.api.vinaya_api.schemas import (
     RequestModelItem,
     RequestModelsResponse,
     RequestReportResponse,
+    ReviewListResponse,
     ReviewPayload,
     ReviewResponse,
+    RulesConfigResponse,
     UpdateLLMProviderPayload,
     UpdateRequestModelPayload,
 )
@@ -37,7 +40,9 @@ from apps.api.vinaya_api.services.request_models import (
     update_request_model,
 )
 from apps.api.vinaya_api.services.requests import create_request, fetch_request
-from apps.api.vinaya_api.services.reviews import fetch_review, submit_review
+from apps.api.vinaya_api.services.reviews import fetch_review, fetch_review_list, submit_review
+from apps.api.vinaya_api.services.rules import get_rules_config, save_rules_config
+from apps.api.vinaya_api.services.confessions import get_confessions
 
 app = FastAPI(title="Vinaya API", version="0.1.0")
 app.add_middleware(
@@ -167,9 +172,29 @@ def get_request_review(request_id: str) -> ReviewResponse:
     return review
 
 
+@app.get("/api/requests/{request_id}/reviews", response_model=ReviewListResponse)
+def get_request_review_list(request_id: str) -> ReviewListResponse:
+    return fetch_review_list(request_id)
+
+
 @app.post("/api/requests/{request_id}/review", response_model=ReviewResponse)
 def create_request_review(request_id: str, payload: ReviewPayload) -> ReviewResponse:
     report = fetch_request(request_id)
     if report is None:
         raise HTTPException(status_code=404, detail="Request report not found")
     return submit_review(request_id, payload)
+
+
+@app.get("/api/rules", response_model=RulesConfigResponse)
+def get_rules() -> RulesConfigResponse:
+    return get_rules_config()
+
+
+@app.put("/api/rules", response_model=RulesConfigResponse)
+def update_rules(payload: RulesConfigResponse) -> RulesConfigResponse:
+    return save_rules_config(payload)
+
+
+@app.get("/api/confessions", response_model=ConfessionListResponse)
+def list_confessions() -> ConfessionListResponse:
+    return get_confessions()

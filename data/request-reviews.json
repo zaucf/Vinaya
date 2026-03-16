@@ -1,34 +1,42 @@
 {
-  "vinaya-31be775b0679": {
-    "review_id": "review-f00c3eb98321",
-    "request_id": "vinaya-31be775b0679",
-    "reviewer": "qa-user",
-    "result": "maintain",
-    "comment": "当前缓行结论合理。",
-    "created_at": "2026-03-11T08:12:20.095697+00:00"
-  },
-  "vinaya-1f7ad33d33bb": {
-    "review_id": "review-06b1e32e1120",
-    "request_id": "vinaya-1f7ad33d33bb",
-    "reviewer": "我",
-    "result": "maintain",
-    "comment": "没问题",
-    "created_at": "2026-03-12T03:21:49.033346+00:00"
-  },
-  "vinaya-b642d155d04f": {
-    "review_id": "review-e0e955d5df11",
-    "request_id": "vinaya-b642d155d04f",
-    "reviewer": "不知道",
-    "result": "revise",
-    "comment": "不行",
-    "created_at": "2026-03-12T06:32:34.113338+00:00"
-  },
-  "vinaya-33632e2691b1": {
-    "review_id": "review-0bdda1f88f9e",
-    "request_id": "vinaya-33632e2691b1",
-    "reviewer": "123",
-    "result": "maintain",
-    "comment": "123",
-    "created_at": "2026-03-12T07:04:59.320024+00:00"
-  }
+  "vinaya-31be775b0679": [
+    {
+      "review_id": "review-f00c3eb98321",
+      "request_id": "vinaya-31be775b0679",
+      "reviewer": "qa-user",
+      "result": "maintain",
+      "comment": "当前缓行结论合理。",
+      "created_at": "2026-03-11T08:12:20.095697+00:00"
+    }
+  ],
+  "vinaya-1f7ad33d33bb": [
+    {
+      "review_id": "review-06b1e32e1120",
+      "request_id": "vinaya-1f7ad33d33bb",
+      "reviewer": "我",
+      "result": "maintain",
+      "comment": "没问题",
+      "created_at": "2026-03-12T03:21:49.033346+00:00"
+    }
+  ],
+  "vinaya-b642d155d04f": [
+    {
+      "review_id": "review-e0e955d5df11",
+      "request_id": "vinaya-b642d155d04f",
+      "reviewer": "不知道",
+      "result": "revise",
+      "comment": "不行",
+      "created_at": "2026-03-12T06:32:34.113338+00:00"
+    }
+  ],
+  "vinaya-33632e2691b1": [
+    {
+      "review_id": "review-0bdda1f88f9e",
+      "request_id": "vinaya-33632e2691b1",
+      "reviewer": "123",
+      "result": "maintain",
+      "comment": "123",
+      "created_at": "2026-03-12T07:04:59.320024+00:00"
+    }
+  ]
 }

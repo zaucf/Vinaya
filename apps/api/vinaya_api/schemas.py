@@ -133,6 +133,49 @@ class ReviewResponse(BaseModel):
     created_at: str
 
 
+class ReviewListResponse(BaseModel):
+    items: list[ReviewResponse]
+
+
+class PreceptConfig(BaseModel):
+    name: str
+    enabled: bool
+    description: str
+    severity: Literal["warning", "block"]
+
+
+class DeferStrategyConfig(BaseModel):
+    strategy_id: str
+    name: str
+    description: str
+    enabled: bool
+    default_duration_hours: int = Field(ge=1, le=720)
+    require_human_review: bool
+    auto_rollback: bool
+
+
+class RulesConfigResponse(BaseModel):
+    precepts: list[PreceptConfig]
+    defer_strategies: list[DeferStrategyConfig]
+    risk_thresholds: dict[str, Any]
+
+
+class ConfessionItem(BaseModel):
+    confession_id: str
+    request_id: str
+    domain: str
+    risk_level: str
+    original_decision: str
+    override_comment: str
+    reviewer: str
+    action_taken: str
+    created_at: str
+
+
+class ConfessionListResponse(BaseModel):
+    items: list[ConfessionItem]
+
+
 class LLMProviderTestResponse(BaseModel):
     ok: bool
     provider_id: str

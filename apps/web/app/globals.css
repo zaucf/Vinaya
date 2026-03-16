@@ -249,3 +249,29 @@ button {
   margin: 0;
   color: var(--muted);
 }
+
+.review-row {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #10131a;
+}
+
+.review-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.pill.maintain {
+  color: var(--accent);
+}
+
+.pill.revise {
+  color: var(--warn);
+}
+
+.pill.override {
+  color: var(--stop);
+}

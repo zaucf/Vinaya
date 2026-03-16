@@ -1,0 +1,78 @@
+{
+  "precepts": [
+    {
+      "name": "不妄语",
+      "enabled": true,
+      "description": "不把不确定性伪装成确定性，不编造事实或依据",
+      "severity": "block"
+    },
+    {
+      "name": "不害生",
+      "enabled": true,
+      "description": "不为了效率制造明显可预见的伤害",
+      "severity": "block"
+    },
+    {
+      "name": "不偷夺",
+      "enabled": true,
+      "description": "不不公平地剥夺机会、资源、申诉空间或尊严",
+      "severity": "warning"
+    },
+    {
+      "name": "不越界",
+      "enabled": true,
+      "description": "不超出系统被授权的适用边界",
+      "severity": "block"
+    },
+    {
+      "name": "不昏乱",
+      "enabled": true,
+      "description": "证据不足、上下文残缺时不做高强度判断",
+      "severity": "warning"
+    }
+  ],
+  "defer_strategies": [
+    {
+      "strategy_id": "trial-restrict",
+      "name": "限期限制",
+      "description": "限制部分功能一段时间，到期自动复核",
+      "enabled": true,
+      "default_duration_hours": 72,
+      "require_human_review": true,
+      "auto_rollback": true
+    },
+    {
+      "strategy_id": "scope-reduce",
+      "name": "范围收缩",
+      "description": "仅在小范围试行，观察效果后再决定是否扩大",
+      "enabled": true,
+      "default_duration_hours": 168,
+      "require_human_review": true,
+      "auto_rollback": false
+    },
+    {
+      "strategy_id": "human-review",
+      "name": "人工复核",
+      "description": "暂不执行，升级到人工审批队列",
+      "enabled": true,
+      "default_duration_hours": 24,
+      "require_human_review": true,
+      "auto_rollback": false
+    },
+    {
+      "strategy_id": "evidence-gather",
+      "name": "补充证据",
+      "description": "在证据不足时暂缓执行，要求补充相关信息后再判断",
+      "enabled": true,
+      "default_duration_hours": 48,
+      "require_human_review": false,
+      "auto_rollback": false
+    }
+  ],
+  "risk_thresholds": {
+    "auto_allow_max_risk": "low",
+    "force_human_review_min_risk": "high",
+    "default_defer_duration_hours": 72,
+    "max_auto_decisions_per_hour": 50
+  }
+}

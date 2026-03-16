@@ -1,27 +1,37 @@
 ﻿import { ReviewForm } from "./review-form";
 
-function mapReviewResultLabel(review: { result: string } | null) {
-  if (!review) {
-    return "未复核";
-  }
+type ReviewItem = {
+  review_id: string;
+  request_id: string;
+  reviewer: string;
+  result: string;
+  comment: string;
+  created_at: string;
+};
 
-  return {
-    maintain: "已维持",
-    revise: "已修改",
-    override: "已推翻",
-  }[review.result] ?? "已复核";
+function mapReviewResultLabel(result: string) {
+  return (
+    {
+      maintain: "已维持",
+      revise: "已修改",
+      override: "已推翻",
+    }[result] ?? "已复核"
+  );
 }
 
-function buildReviewSummary(review: { result: string } | null) {
-  if (!review) {
+function buildReviewSummary(reviews: ReviewItem[]) {
+  if (reviews.length === 0) {
     return "当前仍以系统建议为准，尚未进入人工复核。";
   }
 
-  return {
-    maintain: "人工复核已维持系统建议，可按当前方案继续推进。",
-    revise: "人工复核已修改系统建议，后续应以人工修正后的判断为准。",
-    override: "人工复核已推翻系统建议，后续不得继续沿用原自动结论。",
-  }[review.result] ?? "人工复核已完成，请以人工意见为准。";
+  const latest = reviews[reviews.length - 1];
+  return (
+    {
+      maintain: "人工复核已维持系统建议，可按当前方案继续推进。",
+      revise: "人工复核已修改系统建议，后续应以人工修正后的判断为准。",
+      override: "人工复核已推翻系统建议，后续不得继续沿用原自动结论。",
+    }[latest.result] ?? "人工复核已完成，请以人工意见为准。"
+  );
 }
 
 async function getRequestReport(requestId: string) {
@@ -39,19 +49,16 @@ async function getRequestReport(requestId: string) {
   return response.json();
 }
 
-async function getReview(requestId: string) {
+async function getReviews(requestId: string): Promise<ReviewItem[]> {
   const baseUrl = process.env.NEXT_PUBLIC_VINAYA_API_URL ?? "http://127.0.0.1:4010";
-  const response = await fetch(`${baseUrl}/api/requests/${requestId}/review`, { cache: "no-store" });
-
-  if (response.status === 404) {
-    return null;
-  }
+  const response = await fetch(`${baseUrl}/api/requests/${requestId}/reviews`, { cache: "no-store" });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch review from Python API");
+    return [];
   }
 
-  return response.json();
+  const data = await response.json();
+  return data.items ?? [];
 }
 
 export async function RequestDetail({ requestId }: { requestId: string }) {
@@ -64,15 +71,19 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
           <div className="card">
             <h1>请求不存在</h1>
             <p className="muted">未找到该 request id 对应的判断报告。</p>
+            <p style={{ marginTop: 16 }}>
+              <a href="/requests">返回历史请求</a>
+            </p>
           </div>
         </main>
       );
     }
 
-    const review = await getReview(requestId);
+    const reviews = await getReviews(requestId);
     const report = data.report;
-    const reviewStatus = mapReviewResultLabel(review);
-    const reviewSummary = buildReviewSummary(review);
+    const latestReview = reviews.length > 0 ? reviews[reviews.length - 1] : null;
+    const reviewStatus = latestReview ? mapReviewResultLabel(latestReview.result) : "未复核";
+    const reviewSummary = buildReviewSummary(reviews);
 
     return (
       <main>
@@ -81,6 +92,10 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
             <div className="kicker">Vinaya Request</div>
             <h1>{report.request.title}</h1>
             <p className="muted">请求编号：{data.request_id}</p>
+          </div>
+          <div className="quick-links">
+            <a className="button secondary" href="/requests">历史请求</a>
+            <a className="button secondary" href={`/ledger/${requestId}`}>因果簿</a>
           </div>
         </div>
 
@@ -153,20 +168,27 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
           <ReviewForm requestId={requestId} />
 
           <article className="card">
-            <h2 className="section-title">当前复核</h2>
-            {review ? (
-              <ul className="list">
-                <li>复核人：{review.reviewer}</li>
-                <li>结论：{reviewStatus}</li>
-                <li>意见：{review.comment}</li>
-                <li>时间：{review.created_at}</li>
-              </ul>
-            ) : (
+            <h2 className="section-title">复核记录（{reviews.length}）</h2>
+            {reviews.length === 0 ? (
               <p className="muted">当前还没有人工复核记录。</p>
+            ) : (
+              <div className="table-like">
+                {[...reviews].reverse().map((review) => (
+                  <div key={review.review_id} className="review-row">
+                    <div className="review-row-header">
+                      <strong>{review.reviewer}</strong>
+                      <span className={`pill ${review.result}`}>
+                        {mapReviewResultLabel(review.result)}
+                      </span>
+                    </div>
+                    <p className="muted" style={{ margin: "8px 0 0" }}>{review.comment}</p>
+                    <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                      {review.created_at}
+                    </p>
+                  </div>
+                ))}
+              </div>
             )}
-            <p style={{ marginTop: 16 }}>
-              <a href={`/ledger/${requestId}`}>查看因果簿独立页</a>
-            </p>
           </article>
         </section>
       </main>
@@ -177,6 +199,9 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
         <div className="card">
           <h1>请求详情暂时不可用</h1>
           <p className="muted">当前无法从 Python API 读取请求详情，请稍后重试。</p>
+          <p style={{ marginTop: 16 }}>
+            <a href="/requests">返回历史请求</a>
+          </p>
         </div>
       </main>
     );

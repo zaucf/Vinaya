@@ -38,6 +38,9 @@ export default function HomePage() {
           </p>
         </div>
         <div className="quick-links">
+          <a className="button secondary" href="/dashboard">
+            判断看板
+          </a>
           <a className="button secondary" href="/requests">
             查看历史请求
           </a>
@@ -106,6 +109,9 @@ export default function HomePage() {
         <article className="card">
           <h2 className="section-title">当前链路</h2>
           <ul className="list">
+            <li>
+              <a href="/dashboard">判断看板查看系统克制能力指标</a>
+            </li>
             <li>首页表单提交到 Python FastAPI</li>
             <li>FastAPI 调用 Python 引擎生成判断报告</li>
             <li>详情页按 request id 拉取并展示报告</li>

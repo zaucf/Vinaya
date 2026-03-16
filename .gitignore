@@ -8,3 +8,6 @@ coverage
 apps/*/.next
 apps/*/node_modules
 packages/*/node_modules
+*.egg-info
+__pycache__
+data/*.db
