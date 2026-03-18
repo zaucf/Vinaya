@@ -381,3 +381,127 @@ label input[type="checkbox"] {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
 }
+
+/* ── Judgment Progress Timeline ── */
+
+.stage-timeline {
+  position: relative;
+  padding-left: 28px;
+}
+
+.stage-timeline::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 48px;
+  bottom: 16px;
+  width: 2px;
+  background: var(--border);
+}
+
+.stage-item {
+  position: relative;
+  margin-bottom: 8px;
+  opacity: 0.4;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.stage-item.running,
+.stage-item.complete {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stage-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+}
+
+.stage-indicator {
+  position: absolute;
+  left: -28px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.stage-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.stage-check {
+  width: 16px;
+  height: 16px;
+  position: relative;
+}
+
+.stage-check::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--accent);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.stage-label {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.stage-result {
+  margin: 6px 0 10px;
+  padding: 12px 14px;
+  background: #10131a;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  animation: fadeSlideIn 0.35s ease both;
+}
+
+.stage-result p {
+  margin: 0 0 6px;
+}
+
+.stage-result p:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

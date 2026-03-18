@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 
 from apps.api.vinaya_api.llm import LLMConfigurationError, LLMRequestError
 from apps.api.vinaya_api.schemas import (
@@ -40,6 +41,7 @@ from apps.api.vinaya_api.services.request_models import (
     update_request_model,
 )
 from apps.api.vinaya_api.services.requests import create_request, fetch_request
+from apps.api.vinaya_api.services.requests_stream import stream_judgment_process
 from apps.api.vinaya_api.services.reviews import fetch_review, fetch_review_list, submit_review
 from apps.api.vinaya_api.services.rules import get_rules_config, save_rules_config
 from apps.api.vinaya_api.services.confessions import get_confessions
@@ -153,6 +155,18 @@ def create_request_report(payload: CreateRequestPayload) -> RequestReportRespons
         raise HTTPException(status_code=503, detail=str(error)) from error
     except LLMRequestError as error:
         raise HTTPException(status_code=502, detail=str(error)) from error
+
+
+@app.post("/api/requests/stream")
+async def create_request_stream(payload: CreateRequestPayload) -> StreamingResponse:
+    return StreamingResponse(
+        stream_judgment_process(payload),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { JudgmentProgress } from "./judgment-progress";
 
 const riskLevels = [
   { value: "low", label: "低风险" },
@@ -36,6 +37,14 @@ type RequestModel = {
   human_review_required: boolean;
 };
 
+type ViewPhase = "form" | "progress" | "done";
+
+interface DoneData {
+  request_id: string;
+  report: Record<string, unknown>;
+  summary: Record<string, unknown> | null;
+}
+
 export function RequestForm() {
   const router = useRouter();
   const [models, setModels] = useState<RequestModel[]>([]);
@@ -45,9 +54,13 @@ export function RequestForm() {
   const [riskLevel, setRiskLevel] = useState<RiskLevel>("medium");
   const [requestText, setRequestText] = useState("");
   const [context, setContext] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [loadingModels, setLoadingModels] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // 三阶段视图状态
+  const [phase, setPhase] = useState<ViewPhase>("form");
+  const [streamPayload, setStreamPayload] = useState<Record<string, unknown> | null>(null);
+  const [doneData, setDoneData] = useState<DoneData | null>(null);
 
   const selectedModel = useMemo(
     () => models.find((item) => item.model_id === selectedModelId) ?? null,
@@ -117,39 +130,109 @@ export function RequestForm() {
     setContext("");
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitting(true);
     setError(null);
 
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/requests`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          domain,
-          risk_level: riskLevel,
-          request_text: requestText,
-          context,
-          request_model_id: selectedModelId || null,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Python API 请求失败，请确认 FastAPI 已启动。");
-      }
+    const payload = {
+      title,
+      domain,
+      risk_level: riskLevel,
+      request_text: requestText,
+      context,
+      request_model_id: selectedModelId || null,
+    };
 
-      const data = await response.json();
-      router.push(`/requests/${data.request_id}`);
-    } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "提交失败");
-    } finally {
-      setSubmitting(false);
-    }
+    setStreamPayload(payload);
+    setPhase("progress");
   }
 
+  function handleComplete(data: DoneData) {
+    setDoneData(data);
+    setPhase("done");
+  }
+
+  function handleStreamError(message: string) {
+    setError(message);
+    setPhase("form");
+  }
+
+  function handleReset() {
+    setPhase("form");
+    setStreamPayload(null);
+    setDoneData(null);
+    setError(null);
+  }
+
+  // ── 进度视图 ──
+  if (phase === "progress" && streamPayload) {
+    return (
+      <div className="card">
+        <JudgmentProgress
+          payload={streamPayload as Parameters<typeof JudgmentProgress>[0]["payload"]}
+          onComplete={handleComplete}
+          onError={handleStreamError}
+        />
+      </div>
+    );
+  }
+
+  // ── 完成视图 ──
+  if (phase === "done" && doneData) {
+    const summary = doneData.summary as {
+      decision?: string;
+      risk_level?: string;
+      reasoning?: string;
+      hard_block?: boolean;
+      human_review_required?: boolean;
+    } | null;
+
+    return (
+      <div className="card">
+        <h2 className="section-title">判断完成</h2>
+        {summary && (
+          <div style={{ marginBottom: 16 }}>
+            <span className={`pill ${summary.decision}`}>
+              {summary.decision === "allow"
+                ? "允许"
+                : summary.decision === "defer"
+                  ? "缓行"
+                  : "止行"}
+            </span>
+            <span className={`pill ${summary.risk_level}`}>
+              {summary.risk_level} 风险
+            </span>
+            {summary.hard_block && (
+              <span className="pill stop">硬约束触发</span>
+            )}
+            {summary.human_review_required && (
+              <span className="pill defer">需人工复核</span>
+            )}
+            <p className="muted" style={{ marginTop: 12 }}>
+              {summary.reasoning}
+            </p>
+          </div>
+        )}
+        <div className="action-row">
+          <a
+            className="button"
+            href={`/requests/${doneData.request_id}`}
+          >
+            查看完整报告
+          </a>
+          <button
+            className="button secondary"
+            type="button"
+            onClick={handleReset}
+          >
+            提交新请求
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── 表单视图 ──
   return (
     <form className="card form" onSubmit={handleSubmit}>
       <h2 className="section-title">提交判断请求</h2>
@@ -259,9 +342,9 @@ export function RequestForm() {
       <button
         className="button"
         type="submit"
-        disabled={submitting || loadingModels}
+        disabled={loadingModels}
       >
-        {submitting ? "提交中..." : "生成判断报告"}
+        生成判断报告
       </button>
     </form>
   );
