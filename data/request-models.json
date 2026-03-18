@@ -5,7 +5,7 @@
     "description": "用于内容审核、发布前检查与潜在伤害评估。",
     "domain": "content-moderation",
     "default_risk_level": "medium",
-    "default_title": "审查待���布内容是否适合上线",
+    "default_title": "审查待审内容是否适合上线",
     "placeholder_request_text": "请描述待审核内容、预期动作，以及可能影响到的用户群体。",
     "placeholder_context": "补充平台规则、敏感主题、历史争议案例或当前业务压力。",
     "human_review_required": true,

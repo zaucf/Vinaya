@@ -28,32 +28,36 @@ const outputs = [
 export default function HomePage() {
   return (
     <main>
-      <div className="header">
-        <div>
-          <div className="kicker">Vinaya · 戒定慧引擎</div>
-          <h1>不是让 AI 更快决定，而是让 AI 更少犯业。</h1>
-          <p className="muted">
-            Vinaya 是一个将 AI
-            判断先净化、再执行的系统。在请求与执行之间，加入发心、观缘、持戒、辩义、缓行与回向的判断净化流程。
-          </p>
-        </div>
-        <div className="quick-links">
-          <a className="button secondary" href="/dashboard">
+      <nav className="top-bar">
+        <a href="/" className="brand">Vinaya · 戒定慧引擎</a>
+        <div className="nav-links">
+          <a className="button nav-button" href="/dashboard">
             判断看板
           </a>
-          <a className="button secondary" href="/requests">
-            查看历史请求
+          <a className="button nav-button" href="/requests">
+            历史请求
           </a>
-          <a className="button secondary" href="/models">
-            请求模型中心
+          <a className="button nav-button" href="/models">
+            模型中心
           </a>
-          <a className="button secondary" href="/rules">
-            查看规则说明
+          <a className="button nav-button" href="/rules">
+            规则说明
           </a>
         </div>
+      </nav>
+
+      <div className="hero">
+        <h1>在 AI 失控之前，拦住它。</h1>
+        <p className="muted">
+          Vinaya 在每一次 AI 决策前植入六阶段戒律审查——不让冲动穿越防线，让每一步都经得起因果回溯。
+        </p>
       </div>
 
-      <section className="grid two">
+      <section style={{ marginBottom: 24 }}>
+        <RequestForm />
+      </section>
+
+      <section className="grid three">
         <article className="card">
           <h2 className="section-title">核心信条</h2>
           <ul className="list">
@@ -73,13 +77,9 @@ export default function HomePage() {
             ))}
           </div>
           <p className="muted" style={{ marginTop: 16 }}>
-            当前首页已经接入 Python API 请求提交流，提交后会直接进入报告详情页。
+            每个请求都将按序经过六阶段净化流程，逐层过滤风险与冲动。
           </p>
         </article>
-      </section>
-
-      <section className="grid two" style={{ marginTop: 16 }}>
-        <RequestForm />
 
         <article className="card">
           <h2 className="section-title">三类结论</h2>

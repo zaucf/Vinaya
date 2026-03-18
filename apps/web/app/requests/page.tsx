@@ -22,6 +22,11 @@ export default async function RequestHistoryPage() {
           <h1>历史请求</h1>
           <p className="muted">这里展示通过 Python API 持久化保存的判断请求记录。</p>
         </div>
+        <div className="quick-links">
+          <a className="button secondary" href="/">
+            返回首页
+          </a>
+        </div>
       </div>
 
       <section className="grid">

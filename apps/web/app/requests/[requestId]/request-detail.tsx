@@ -1,5 +1,21 @@
 ﻿import { ReviewForm } from "./review-form";
 
+const RISK_LEVEL_LABELS: Record<string, string> = {
+  low: "低风险",
+  medium: "中风险",
+  high: "高风险",
+};
+
+const DOMAIN_LABELS: Record<string, string> = {
+  "content-moderation": "内容审核",
+  "risk-review": "风险复核",
+  "operations-trial": "运营试行",
+  "hr-decision": "人事决策",
+  "finance-approval": "财务审批",
+  "legal-compliance": "法律合规",
+  "customer-escalation": "客诉升级",
+};
+
 type ReviewItem = {
   review_id: string;
   request_id: string;
@@ -96,15 +112,22 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
           <div className="quick-links">
             <a className="button secondary" href="/requests">历史请求</a>
             <a className="button secondary" href={`/ledger/${requestId}`}>因果簿</a>
+            <a className="button secondary" href="/">返回首页</a>
           </div>
         </div>
 
         <section className="grid two">
           <article className="card">
             <h2>请求内容</h2>
-            <p className="muted">{report.request.requestText}</p>
-            <p className="muted">领域：{report.request.domain}</p>
-            <p className="muted">风险等级：{report.request.riskLevel}</p>
+            <ul className="list">
+              <li><strong>标题</strong>：{report.request.title}</li>
+              <li><strong>领域</strong>：{DOMAIN_LABELS[report.request.domain] ?? report.request.domain}</li>
+              <li><strong>风险等级</strong>：{RISK_LEVEL_LABELS[report.request.riskLevel] ?? report.request.riskLevel}</li>
+              <li><strong>请求内容</strong>：{report.request.requestText}</li>
+              {report.request.context ? (
+                <li><strong>补充上下文</strong>：{report.request.context}</li>
+              ) : null}
+            </ul>
           </article>
 
           <article className="card">
@@ -146,6 +169,22 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
                   <li key={item.name}>{item.name}：{item.reason}</li>
                 )
               )}
+            </ul>
+          </article>
+
+          <article className="card">
+            <h2>辩义</h2>
+            <ul className="list">
+              <li>推荐方案：{report.deliberation.preferredOption}</li>
+              {report.deliberation.options.map(
+                (item: { name: string; score: number }) => (
+                  <li key={item.name}>{item.name}：{Math.round(item.score * 100)}分</li>
+                )
+              )}
+              {report.deliberation.dissentNotes.length > 0 && (
+                <li>分歧记录：{report.deliberation.dissentNotes.join("；")}</li>
+              )}
+              <li>辩义风险：{RISK_LEVEL_LABELS[report.deliberation.deliberationRisk] ?? report.deliberation.deliberationRisk}</li>
             </ul>
           </article>
 

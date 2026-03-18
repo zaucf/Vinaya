@@ -1,17 +1,4 @@
 {
-  "default_openai": {
-    "provider_id": "default_openai",
-    "name": "OpenAI Default",
-    "provider_type": "openai-compatible",
-    "base_url": "https://api.openai.com/v1",
-    "model": "gpt-4o-mini",
-    "api_key": "sk-vXfFhuRD1f3Xq5HHx",
-    "temperature": 0.7,
-    "timeout_seconds": 60,
-    "enabled": false,
-    "is_default": false,
-    "system_prompt": "123"
-  },
   "local": {
     "provider_id": "local",
     "name": "本地",

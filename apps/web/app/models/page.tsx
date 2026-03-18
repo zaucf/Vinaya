@@ -15,6 +15,11 @@ export default function ModelsPage() {
           <h1>配置中心</h1>
           <p className="muted">管理 LLM 提供商和请求模型</p>
         </div>
+        <div className="quick-links">
+          <a className="button secondary" href="/">
+            返回首页
+          </a>
+        </div>
       </div>
 
       <div className="tab-bar">

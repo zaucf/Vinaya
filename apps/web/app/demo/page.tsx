@@ -24,6 +24,11 @@ export default async function DemoPage() {
             Python 引擎链路。
           </p>
         </div>
+        <div className="quick-links">
+          <a className="button secondary" href="/">
+            返回首页
+          </a>
+        </div>
       </div>
 
       <section className="grid two">

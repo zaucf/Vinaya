@@ -76,6 +76,9 @@ export default async function LedgerPage({
           <a className="button secondary" href="/requests">
             历史请求
           </a>
+          <a className="button secondary" href="/">
+            返回首页
+          </a>
         </div>
       </div>
 
