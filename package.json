@@ -7,9 +7,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace @vinaya/web",
-    "build": "npm run build --workspace @vinaya/web",
-    "lint": "npm run lint --workspace @vinaya/web",
+    "dev": "cd apps/web && npx next dev -p 3000",
+    "build": "cd apps/web && npx next build",
+    "lint": "cd apps/web && npx next lint",
     "api:dev": "python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010"
   }
 }

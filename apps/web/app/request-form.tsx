@@ -9,6 +9,16 @@ const riskLevels = [
   { value: "high", label: "高风险" },
 ] as const;
 
+const PRESET_DOMAINS = [
+  { value: "content-moderation", label: "内容审核" },
+  { value: "risk-review", label: "风险复核" },
+  { value: "operations-trial", label: "运营试行" },
+  { value: "hr-decision", label: "人事决策" },
+  { value: "finance-approval", label: "财务审批" },
+  { value: "legal-compliance", label: "法律合规" },
+  { value: "customer-escalation", label: "客诉升级" },
+] as const;
+
 const apiBaseUrl =
   process.env.NEXT_PUBLIC_VINAYA_API_URL ?? "http://127.0.0.1:4010";
 
@@ -184,11 +194,32 @@ export function RequestForm() {
       </label>
       <label className="field">
         <span>领域</span>
-        <input
-          value={domain}
-          onChange={(event) => setDomain(event.target.value)}
-          required
-        />
+        <select
+          value={PRESET_DOMAINS.some((d) => d.value === domain) ? domain : "__custom__"}
+          onChange={(event) => {
+            if (event.target.value === "__custom__") {
+              setDomain("");
+            } else {
+              setDomain(event.target.value);
+            }
+          }}
+        >
+          {PRESET_DOMAINS.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
+          <option value="__custom__">自定义...</option>
+        </select>
+        {!PRESET_DOMAINS.some((d) => d.value === domain) && (
+          <input
+            value={domain}
+            onChange={(event) => setDomain(event.target.value)}
+            placeholder="输入自定义领域"
+            required
+            style={{ marginTop: 8 }}
+          />
+        )}
       </label>
       <label className="field">
         <span>风险等级</span>

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import os
 from dataclasses import dataclass
 from typing import Any
 from urllib import error, request
@@ -26,12 +25,36 @@ class LLMSettings:
     timeout_seconds: int = 60
 
 
-def load_llm_settings() -> LLMSettings:
-    provider = get_active_llm_provider()
-    api_key = os.getenv(provider.api_key_env)
+def load_llm_settings(llm_provider_id: str | None = None) -> LLMSettings:
+    """加载 LLM 设置。
+
+    Args:
+        llm_provider_id: 指定使用的 LLM 供应商 ID，如果为 None 则使用默认供应商
+
+    Raises:
+        LLMConfigurationError: 供应商不存在或 API key 为空
+    """
+    from apps.api.vinaya_api.services.llm_providers import get_active_llm_provider
+
+    if llm_provider_id:
+        from apps.api.vinaya_api.repository import get_llm_provider
+
+        provider = get_llm_provider(llm_provider_id)
+        if provider is None:
+            raise LLMConfigurationError(
+                f"Specified LLM provider '{llm_provider_id}' not found"
+            )
+        if not provider.enabled:
+            raise LLMConfigurationError(
+                f"Specified LLM provider '{llm_provider_id}' is not enabled"
+            )
+    else:
+        provider = get_active_llm_provider()
+
+    api_key = provider.api_key
     if not api_key:
         raise LLMConfigurationError(
-            f"Missing environment variable for active LLM provider: {provider.api_key_env}"
+            f"Missing API key for LLM provider: {provider.provider_id}"
         )
 
     return LLMSettings(
@@ -43,8 +66,28 @@ def load_llm_settings() -> LLMSettings:
     )
 
 
-def chat_json(*, system_prompt: str, user_prompt: str) -> dict[str, Any]:
-    settings = load_llm_settings()
+def chat_json(
+    *,
+    system_prompt: str,
+    user_prompt: str,
+    llm_provider_id: str | None = None,
+) -> dict[str, Any]:
+    """调用 LLM 并返回 JSON 格式响应。
+
+    Args:
+        system_prompt: 系统提示词
+        user_prompt: 用户提示词
+        llm_provider_id: 指定使用的 LLM 供应商 ID，如果为 None 则使用默认供应商
+    """
+    settings = load_llm_settings(llm_provider_id)
+
+    # 构建完整的端点 URL：base_url 可能是基础 URL 或完整 URL
+    base_url = settings.base_url.rstrip("/")
+    if not base_url.endswith("/chat/completions"):
+        endpoint_url = f"{base_url}/chat/completions"
+    else:
+        endpoint_url = base_url
+
     payload = {
         "model": settings.model,
         "temperature": settings.temperature,
@@ -57,7 +100,7 @@ def chat_json(*, system_prompt: str, user_prompt: str) -> dict[str, Any]:
 
     body = json.dumps(payload).encode("utf-8")
     http_request = request.Request(
-        settings.base_url,
+        endpoint_url,
         data=body,
         headers={
             "Content-Type": "application/json",

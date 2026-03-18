@@ -3,6 +3,8 @@ Name: vinaya-workspace
 Version: 0.1.0
 Summary: Vinaya judgment purification engine with Next.js web app and FastAPI backend
 Requires-Python: >=3.11
-Requires-Dist: fastapi<1.0,>=0.115
-Requires-Dist: uvicorn[standard]<1.0,>=0.30
-Requires-Dist: pydantic<3.0,>=2.8
+Provides-Extra: server
+Requires-Dist: fastapi<1.0,>=0.115; extra == "server"
+Requires-Dist: uvicorn[standard]<1.0,>=0.30; extra == "server"
+Requires-Dist: pydantic<3.0,>=2.8; extra == "server"
+Requires-Dist: httpx<1.0,>=0.27; extra == "server"

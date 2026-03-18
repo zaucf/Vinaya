@@ -11,9 +11,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
-
-from apps.api.vinaya_api.services.rules import get_rules_config
 
 # 风险等级排序
 RISK_ORDER = {"low": 0, "medium": 1, "high": 2}
@@ -24,15 +23,35 @@ def _risk_ge(a: str, b: str) -> bool:
     return RISK_ORDER.get(a, 0) >= RISK_ORDER.get(b, 0)
 
 
-def enforce_precepts(report: dict[str, Any]) -> dict[str, Any]:
+def enforce_precepts(
+    report: dict[str, Any],
+    *,
+    rules_provider: Callable | None = None,
+) -> dict[str, Any]:
     """对 LLM/规则引擎的输出做戒律硬约束校验。
 
     这是判断链的最后一关。LLM 可以建议 allow，但如果触犯了
     severity=block 的戒律，这里会强制覆盖为 stop。
 
-    返回修改后的 report（原地修改并返回）。
+    Args:
+        report: LLM/规则引擎输出的判断报告
+        rules_provider: 规则配置加载函数，返回包含 precepts 和 risk_thresholds 的对象。
+                       如果为 None，使用默认配置（无戒律约束）
+
+    Returns:
+        修改后的 report（原地修改并返回）
     """
-    config = get_rules_config()
+    if rules_provider is None:
+        # 默认配置：无戒律约束
+        class _DefaultConfig:
+            precepts = []
+            risk_thresholds = {
+                "auto_allow_max_risk": "medium",
+                "force_human_review_min_risk": "high",
+            }
+        config = _DefaultConfig()
+    else:
+        config = rules_provider()
 
     # ── 戒：五戒硬约束 ──────────────────────────────
 

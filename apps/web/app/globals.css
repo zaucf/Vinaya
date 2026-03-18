@@ -158,6 +158,30 @@ button {
   padding: 10px 12px;
 }
 
+/* Form labels */
+label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+label input,
+label textarea,
+label select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #10131a;
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+label input[type="checkbox"] {
+  width: auto;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -274,4 +298,86 @@ button {
 
 .pill.override {
   color: var(--stop);
+}
+
+/* Tab bar */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-item {
+  padding: 12px 20px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tab-item:hover {
+  color: var(--text);
+}
+
+.tab-item.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Section header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Provider card */
+.provider-card {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #10131a;
+  transition: border-color 0.2s;
+}
+
+.provider-card.is-default {
+  border-color: var(--accent);
+}
+
+.provider-card.is-disabled {
+  opacity: 0.6;
+}
+
+.provider-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.provider-card-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+/* Form row */
+.form-row {
+  display: grid;
+  gap: 14px;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
 }

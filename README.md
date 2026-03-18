@@ -48,19 +48,29 @@ export VINAYA_USE_MOCK_ENGINE="true"
 
 ### 4. 启动服务
 
-```bash
-# 启动后端 API（端口 4010）
-python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010
+需要两个终端分别启动前后端：
 
-# 另开一个终端，启动前端（端口 3000）
-npm run dev
+**终端 1 — 启动后端 API（端口 4010）：**
+
+```bash
+# 在项目根目录执行
+python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010
 ```
 
-或者用 npm 脚本：
+**终端 2 — 启动前端（端口 3000）：**
 
 ```bash
-npm run api:dev   # 启动后端
-npm run dev       # 启动前端
+# 进入前端目录执行
+cd apps/web
+npx next dev -p 3000
+```
+
+验证启动成功：
+
+```bash
+# 后端健康检查
+curl http://127.0.0.1:4010/health
+# 返回 {"ok":true,"service":"vinaya-api"}
 ```
 
 打开浏览器访问 `http://127.0.0.1:3000`。
@@ -169,6 +179,127 @@ vinaya/
 - `docs/vinaya-architecture-v0.1.md`：系统架构——六层结构、状态机、角色设计、API 协议
 - `docs/vinaya-mvp-prd-v0.1.md`：MVP PRD——功能列表、验收标准、页面范围
 - `docs/vinaya-status-v0.1.md`：项目现状——设计对照、已完成功能、偏离分析、后续方向
+- `docs/sdk_examples.py`：SDK 使用示例代码
+
+## Python SDK
+
+Vinaya 提供 Python SDK，支持两种使用方式：
+
+### 安装
+
+```bash
+# 仅安装 SDK（零依赖）
+pip install -e .
+
+# 安装 SDK + API 服务器（包含 FastAPI 等依赖）
+pip install -e ".[server]"
+```
+
+### 使用方式
+
+#### 1. 远程模式（HTTP 客户端）
+
+连接到已部署的 Vinaya API 服务器：
+
+```python
+from vinaya import VinayaClient
+
+client = VinayaClient(base_url="http://localhost:4010")
+
+# 执行判断
+result = client.judge(
+    title="代码生成请求",
+    request_text="请帮我生成一个 Python 斐波那契函数",
+    domain="code",
+    risk_level="low",
+)
+
+# 读取机器友好的摘要
+print(result.summary.decision)  # 'allow', 'defer', or 'stop'
+print(result.summary.risk_level)  # 'low', 'medium', or 'high'
+print(result.summary.hard_block)  # True/False
+print(result.summary.reasoning)
+
+# 检查戒律违规
+for violation in result.summary.precept_violations:
+    print(f"- {violation.name}: {violation.status}")
+```
+
+#### 2. 本地模式（直接调用）
+
+嵌入到你的 AI 系统中，无需 HTTP 服务器：
+
+```python
+from vinaya import VinayaLocalClient
+
+# Mock 模式（测试/开发用）
+client = VinayaLocalClient(use_mock=True)
+result = client.judge(
+    title="测试请求",
+    request_text="测试内容",
+    domain="test",
+    risk_level="low",
+)
+
+# 真实 LLM 模式
+from my_llm import my_chat_json
+from my_rules import get_rules
+
+client = VinayaLocalClient(
+    chat_fn=my_chat_json,
+    rules_provider=get_rules,
+)
+result = client.judge(...)
+```
+
+#### 3. AI 网关集成
+
+```python
+from vinaya import VinayaLocalClient
+
+vinaya = VinayaLocalClient(use_mock=True)
+
+def handle_user_request(user_input: str) -> str:
+    """处理用户请求的决策网关。"""
+    result = vinaya.judge(
+        title="用户请求",
+        request_text=user_input,
+        domain="general",
+        risk_level="medium",
+    )
+
+    if result.summary.decision == "allow":
+        return execute_request(user_input)
+    elif result.summary.decision == "defer":
+        return f"请求需要进一步审查：{result.summary.reasoning}"
+    else:  # stop
+        return f"请求被拒绝：{result.summary.reasoning}"
+```
+
+### 数据结构
+
+```python
+from vinaya import JudgmentResult, JudgmentSummary, Decision, RiskLevel
+
+# JudgmentSummary（机器友好）
+@dataclass
+class JudgmentSummary:
+    request_id: str
+    decision: Decision  # 'allow' | 'defer' | 'stop'
+    risk_level: RiskLevel  # 'low' | 'medium' | 'high'
+    hard_block: bool
+    human_review_required: bool
+    reasoning: str
+    precept_violations: tuple[PreceptViolation, ...]
+
+# JudgmentResult（摘要 + 完整报告）
+@dataclass
+class JudgmentResult:
+    summary: JudgmentSummary  # AI 系统读取
+    report: dict              # 人工查看
+```
+
+更多示例参见 `docs/sdk_examples.py`。
 
 ## 当前版本状态
 

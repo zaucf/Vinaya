@@ -5,10 +5,11 @@
     "description": "用于内容审核、发布前检查与潜在伤害评估。",
     "domain": "content-moderation",
     "default_risk_level": "medium",
-    "default_title": "审查待发布内容是否适合上线",
+    "default_title": "审查待���布内容是否适合上线",
     "placeholder_request_text": "请描述待审核内容、预期动作，以及可能影响到的用户群体。",
     "placeholder_context": "补充平台规则、敏感主题、历史争议案例或当前业务压力。",
-    "human_review_required": true
+    "human_review_required": true,
+    "llm_provider_id": "local"
   },
   "risk_review_v1": {
     "model_id": "risk_review_v1",
@@ -17,9 +18,10 @@
     "domain": "risk-review",
     "default_risk_level": "high",
     "default_title": "评估高影响动作是否应进入人工复核",
-    "placeholder_request_text": "请说明拟执行动作、潜在受影响对象、不可回退后果以及当前时间压力。",
+    "placeholder_request_text": "请说明拟��行动作、潜在受影响对象、不可回退后果以及当前时间压力。",
     "placeholder_context": "补充审批链、回退条件、试运行范围和人工责任人。",
-    "human_review_required": true
+    "human_review_required": true,
+    "llm_provider_id": "local"
   },
   "ops_trial_v1": {
     "model_id": "ops_trial_v1",
@@ -30,6 +32,7 @@
     "default_title": "评估运营试行方案是否可在受控范围推进",
     "placeholder_request_text": "请描述试行方案、覆盖范围、衡量指标和预期收益。",
     "placeholder_context": "补充灰度条件、终止阈值、用户影响面与观察周期。",
-    "human_review_required": false
+    "human_review_required": false,
+    "llm_provider_id": "local"
   }
 }

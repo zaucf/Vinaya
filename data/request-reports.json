@@ -794,5 +794,547 @@
       "decision": "defer",
       "reasoningSummary": "综合判断为 high 风险，建议缓行并保留人工复核。"
     }
+  },
+  "vinaya-ce922fb45204": {
+    "request_id": "vinaya-ce922fb45204",
+    "report": {
+      "request": {
+        "requestId": "vinaya-ce922fb45204",
+        "requestModelId": "manual",
+        "title": "测试高风险请求",
+        "requestText": "是否对某用户执行永久封禁",
+        "domain": "content-moderation",
+        "riskLevel": "high",
+        "context": "测试戒律执行层"
+      },
+      "intention": {
+        "primaryIntent": "测试高风险请求",
+        "mixedMotives": [
+          "快速降低风险暴露",
+          "缩短人工处理时间"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "high"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "误判会扩大影响面",
+          "可能带来不可回退后果"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "block",
+            "reason": "高风险请求必须保留人工主权。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.28
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.95
+          }
+        ],
+        "preferredOption": "转人工复核后再决定",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "进入人工复核队列并冻结自动执行",
+          "scope": "仅生成建议，不触发真实动作",
+          "reviewAt": "2026-03-17T09:39:18.426943+00:00",
+          "rollbackCondition": "人工认定风险过高或信息不足时停止推进",
+          "humanOwner": "human-review-owner"
+        },
+        "releaseRisk": "high"
+      },
+      "decision": "stop",
+      "reasoningSummary": "[戒律强制止行] LLM 原始建议为 defer，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）；不越界（高风险请求必须保留人工主权。）。系统强制覆盖为 stop。原始分析：综合判断为 high 风险，建议缓行并保留人工复核。"
+    }
+  },
+  "vinaya-e30244d18182": {
+    "request_id": "vinaya-e30244d18182",
+    "report": {
+      "request": {
+        "requestId": "vinaya-e30244d18182",
+        "requestModelId": "manual",
+        "title": "测试低风险请求",
+        "requestText": "是否在测试环境开启某个功能",
+        "domain": "testing",
+        "riskLevel": "low",
+        "context": "低风险场景"
+      },
+      "intention": {
+        "primaryIntent": "测试低风险请求",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.72
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "先小范围试行并设置回退条件",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "允许在受控环境执行",
+          "scope": "低风险范围",
+          "reviewAt": "2026-03-23T09:39:18.431690+00:00",
+          "rollbackCondition": "若产生异常结果则回退",
+          "humanOwner": "system-owner"
+        },
+        "releaseRisk": "low"
+      },
+      "decision": "stop",
+      "reasoningSummary": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。"
+    }
+  },
+  "vinaya-630da2d714ee": {
+    "request_id": "vinaya-630da2d714ee",
+    "report": {
+      "request": {
+        "requestId": "vinaya-630da2d714ee",
+        "requestModelId": "manual",
+        "title": "测试",
+        "requestText": "测试内容",
+        "domain": "test",
+        "riskLevel": "low",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "测试",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.72
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "先小范围试行并设置回退条件",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "允许在受控环境执行",
+          "scope": "低风险范围",
+          "reviewAt": "2026-03-25T03:08:47.208647+00:00",
+          "rollbackCondition": "若产生异常结果则回退",
+          "humanOwner": "system-owner"
+        },
+        "releaseRisk": "low"
+      },
+      "decision": "stop",
+      "reasoningSummary": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。"
+    },
+    "summary": {
+      "request_id": "vinaya-630da2d714ee",
+      "decision": "stop",
+      "risk_level": "medium",
+      "hard_block": true,
+      "human_review_required": true,
+      "reasoning": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。",
+      "precept_violations": [
+        {
+          "name": "不妄语",
+          "status": "block",
+          "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+        }
+      ]
+    }
+  },
+  "vinaya-b9aa03a1c097": {
+    "request_id": "vinaya-b9aa03a1c097",
+    "report": {
+      "request": {
+        "requestId": "vinaya-b9aa03a1c097",
+        "requestModelId": "content_moderation_v1",
+        "title": "测试",
+        "requestText": "测试内容",
+        "domain": "test",
+        "riskLevel": "low",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "测试",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.72
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "先小范围试行并设置回退条件",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "允许在受控环境执行",
+          "scope": "低风险范围",
+          "reviewAt": "2026-03-25T03:16:01.119758+00:00",
+          "rollbackCondition": "若产生异常结果则回退",
+          "humanOwner": "system-owner"
+        },
+        "releaseRisk": "low"
+      },
+      "decision": "stop",
+      "reasoningSummary": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。"
+    },
+    "summary": {
+      "request_id": "vinaya-b9aa03a1c097",
+      "decision": "stop",
+      "risk_level": "medium",
+      "hard_block": true,
+      "human_review_required": true,
+      "reasoning": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。",
+      "precept_violations": [
+        {
+          "name": "不妄语",
+          "status": "block",
+          "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+        }
+      ]
+    }
+  },
+  "vinaya-50d8195c5b53": {
+    "request_id": "vinaya-50d8195c5b53",
+    "report": {
+      "request": {
+        "requestId": "vinaya-50d8195c5b53",
+        "requestModelId": "content_moderation_v1",
+        "title": "test",
+        "requestText": "test",
+        "domain": "test",
+        "riskLevel": "low",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "test",
+        "mixedMotives": [
+          "提升处理效率"
+        ],
+        "beneficiaries": [
+          "系统使用者",
+          "受影响的业务流程"
+        ],
+        "costBearers": [
+          "被决策对象",
+          "人工复核人员"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "收到新的高影响判断请求",
+          "需要在执行前做净化审查"
+        ],
+        "rootCauses": [
+          "自动化决策风险较高",
+          "需要明确执行边界与回退机制"
+        ],
+        "affectedParties": [
+          "请求提交者",
+          "被影响对象",
+          "后续审核人员"
+        ],
+        "externalities": [
+          "若解释不足，会影响系统信任感"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "当前请求可在原型边界内分析。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接执行原请求",
+            "score": 0.72
+          },
+          {
+            "name": "先小范围试行并设置回退条件",
+            "score": 0.91
+          },
+          {
+            "name": "转人工复核后再决定",
+            "score": 0.76
+          }
+        ],
+        "preferredOption": "先小范围试行并设置回退条件",
+        "dissentNotes": [
+          "当前信息量有限，不宜把自动结论包装成最终裁定。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "允许在受控环境执行",
+          "scope": "低风险范围",
+          "reviewAt": "2026-03-25T03:30:23.158878+00:00",
+          "rollbackCondition": "若产生异常结果则回退",
+          "humanOwner": "system-owner"
+        },
+        "releaseRisk": "low"
+      },
+      "decision": "stop",
+      "reasoningSummary": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。"
+    },
+    "summary": {
+      "request_id": "vinaya-50d8195c5b53",
+      "decision": "stop",
+      "risk_level": "medium",
+      "hard_block": true,
+      "human_review_required": true,
+      "reasoning": "[戒律强制止行] LLM 原始建议为 allow，但触犯了以下 block 级戒律：不妄语（当前为原型阶段，结论必须明确标注不确定性。）。系统强制覆盖为 stop。原始分析：综合判断为 medium 风险，但当前可在受控范围内推进。",
+      "precept_violations": [
+        {
+          "name": "不妄语",
+          "status": "block",
+          "reason": "当前为原型阶段，结论必须明确标注不确定性。"
+        }
+      ]
+    }
   }
 }

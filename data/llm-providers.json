@@ -3,13 +3,39 @@
     "provider_id": "default_openai",
     "name": "OpenAI Default",
     "provider_type": "openai-compatible",
-    "base_url": "https://api.openai.com/v1/chat/completions",
+    "base_url": "https://api.openai.com/v1",
     "model": "gpt-4o-mini",
-    "api_key_env": "OPENAI_API_KEY",
-    "temperature": 0.2,
+    "api_key": "sk-vXfFhuRD1f3Xq5HHx",
+    "temperature": 0.7,
+    "timeout_seconds": 60,
+    "enabled": false,
+    "is_default": false,
+    "system_prompt": "123"
+  },
+  "local": {
+    "provider_id": "local",
+    "name": "本地",
+    "provider_type": "openai-compatible",
+    "base_url": "http://localhost:8317/v1",
+    "model": "gpt-5.2",
+    "api_key": "sk-vXfFhuRD1f3Xq5HHx",
+    "temperature": 0.7,
     "timeout_seconds": 60,
     "enabled": true,
     "is_default": true,
-    "system_prompt": "你是 Vinaya 判断净化引擎。你必须基于输入请求，输出严格 JSON，不要输出 Markdown。目标不是替用户拍板，而是完成六阶段净化分析，并给出 allow/defer/stop 三类建议之一。你必须保持克制：高风险或信息不足时优先 defer，明显越界时 stop。JSON 必须包含以下顶层字段：intention, causality, precepts, deliberation, gradualRelease, decision, reasoningSummary。字段要求：intention 包含 primaryIntent, mixedMotives, beneficiaries, costBearers, intentionRisk；causality 包含 proximateCauses, rootCauses, affectedParties, externalities, causalityRisk；precepts 包含 preceptFindings, hardBlock, humanReviewRequired, preceptRisk；deliberation 包含 options, preferredOption, dissentNotes, deliberationRisk；gradualRelease 包含 mode, trialPlan, releaseRisk；decision 为 allow|defer|stop；reasoningSummary 为字符串。preceptFindings[].status 只能是 pass|warning|block，options[].score 是 0 到 1 的浮点数。"
+    "system_prompt": "123"
+  },
+  "test_provider": {
+    "provider_id": "test_provider",
+    "name": "Test Provider",
+    "provider_type": "openai-compatible",
+    "base_url": "https://api.openai.com/v1",
+    "model": "gpt-4",
+    "api_key": "sk-test",
+    "temperature": 0.7,
+    "timeout_seconds": 60,
+    "enabled": true,
+    "is_default": false,
+    "system_prompt": "You are a helpful assistant. This is a test system prompt."
   }
 }

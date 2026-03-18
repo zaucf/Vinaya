@@ -18,6 +18,7 @@ class RequestModelItem(BaseModel):
     placeholder_request_text: str
     placeholder_context: str
     human_review_required: bool
+    llm_provider_id: str | None = None  # 指定使用的 LLM 供应商，空则使用默认
 
 
 class RequestModelsResponse(BaseModel):
@@ -29,7 +30,7 @@ class LLMProviderItem(BaseModel):
     provider_type: Literal["openai-compatible"]
     base_url: str
     model: str
-    api_key_env: str
+    api_key: str
     temperature: float = Field(ge=0, le=2)
     timeout_seconds: int = Field(ge=1, le=600)
     enabled: bool
@@ -47,7 +48,7 @@ class CreateLLMProviderPayload(BaseModel):
     provider_type: Literal["openai-compatible"]
     base_url: str = Field(min_length=1, max_length=500)
     model: str = Field(min_length=1, max_length=120)
-    api_key_env: str = Field(min_length=1, max_length=120)
+    api_key: str = Field(min_length=1, max_length=500)
     temperature: float = Field(ge=0, le=2)
     timeout_seconds: int = Field(ge=1, le=600)
     enabled: bool
@@ -60,7 +61,7 @@ class UpdateLLMProviderPayload(BaseModel):
     provider_type: Literal["openai-compatible"]
     base_url: str = Field(min_length=1, max_length=500)
     model: str = Field(min_length=1, max_length=120)
-    api_key_env: str = Field(min_length=1, max_length=120)
+    api_key: str = Field(min_length=1, max_length=500)
     temperature: float = Field(ge=0, le=2)
     timeout_seconds: int = Field(ge=1, le=600)
     enabled: bool
@@ -77,6 +78,7 @@ class CreateRequestModelPayload(BaseModel):
     placeholder_request_text: str = Field(min_length=1, max_length=4000)
     placeholder_context: str = Field(default="", max_length=4000)
     human_review_required: bool
+    llm_provider_id: str | None = Field(default=None, max_length=80)  # 指定使用的 LLM 供应商
 
 
 class UpdateRequestModelPayload(BaseModel):
@@ -88,6 +90,7 @@ class UpdateRequestModelPayload(BaseModel):
     placeholder_request_text: str = Field(min_length=1, max_length=4000)
     placeholder_context: str = Field(default="", max_length=4000)
     human_review_required: bool
+    llm_provider_id: str | None = Field(default=None, max_length=80)  # 指定使用的 LLM 供应商
 
 
 class CreateRequestPayload(BaseModel):
@@ -99,10 +102,39 @@ class CreateRequestPayload(BaseModel):
     request_model_id: str | None = Field(default=None, max_length=80)
 
 
+# ────────────────────────────────────────────────────────────────────────────
+# 机器友好的判断摘要（新增）
+# ────────────────────────────────────────────────────────────────────────────
+
+
+class PreceptViolationItem(BaseModel):
+    """戒律违规项。"""
+
+    name: str
+    status: Literal["pass", "warning", "block"]
+    reason: str
+
+
+class JudgmentSummaryResponse(BaseModel):
+    """判断摘要（机器友好）。
+
+    这是给 AI 系统读取的结构化数据。
+    """
+
+    request_id: str
+    decision: Literal["allow", "defer", "stop"]
+    risk_level: Literal["low", "medium", "high"]
+    hard_block: bool
+    human_review_required: bool
+    reasoning: str
+    precept_violations: list[PreceptViolationItem]
+
 
 class RequestReportResponse(BaseModel):
     request_id: str
     report: dict[str, Any]
+    # 新增：机器友好的摘要
+    summary: JudgmentSummaryResponse | None = None
 
 
 class RequestListItem(BaseModel):
@@ -180,3 +212,4 @@ class LLMProviderTestResponse(BaseModel):
     ok: bool
     provider_id: str
     message: str
+    models: list[str] | None = None  # 可用模型列表
