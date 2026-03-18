@@ -14,13 +14,14 @@ Vinaya 是一个以**戒、定、慧**为核心的 AI 判断净化系统。
 
 - Python >= 3.11
 - Node.js >= 18
+- pnpm >= 10
 - 一个 OpenAI 兼容的 LLM API Key
 
 ### 2. 安装依赖
 
 ```bash
-# 安装前端依赖
-npm install
+# 安装前端依赖（项目根目录执行，monorepo 会自动解析 workspace 包）
+pnpm install
 
 # 安装 Python 依赖
 python -m pip install -e .
@@ -60,9 +61,9 @@ python -m uvicorn apps.api.main:app --host 127.0.0.1 --port 4010
 **终端 2 — 启动前端（端口 3000）：**
 
 ```bash
-# 进入前端目录执行
+# 在项目根目录执行
 cd apps/web
-npx next dev -p 3000
+pnpm dev
 ```
 
 验证启动成功：

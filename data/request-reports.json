@@ -1336,5 +1336,397 @@
         }
       ]
     }
+  },
+  "vinaya-d0e098888c64": {
+    "request_id": "vinaya-d0e098888c64",
+    "report": {
+      "request": {
+        "requestId": "vinaya-d0e098888c64",
+        "requestModelId": "content_moderation_v1",
+        "title": "审查待发布内容是否适合上线",
+        "requestText": "在qq.pw的NAT机器，平时用来开家宽\n\n今天上线发现连不上了，其它端口也无法访问\n有fail2ban，关PasswordAuthentication，开PubkeyAuthentication\n\n到底是怎么被接管的呢？",
+        "domain": "content-moderation",
+        "riskLevel": "medium",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "寻求对服务器疑似被入侵/接管的原因分析，以便恢复可用性并提升安全性",
+        "mixedMotives": [
+          "排障与恢复访问",
+          "了解攻击路径以避免再次发生"
+        ],
+        "beneficiaries": [
+          "提问者（系统所有者/维护者）",
+          "同类读者（安全运维经验获取者）"
+        ],
+        "costBearers": [
+          "若被误用，可能增加潜在受害站点/主机的风险"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "主机对外端口不可达，可能为网络层封禁/路由/NAT变更/服务宕机/防火墙策略变化",
+          "存在fail2ban与仅公钥登录配置，但仍可能被利用其他入口（应用漏洞、供应链、已泄露密钥、提权等）"
+        ],
+        "rootCauses": [
+          "安全事件调查信息不足，无法判断是否真实“被接管”还是网络/配置故障",
+          "对入侵路径的讨论具有双重用途属性（可能被攻击者借鉴排查防护缺口）"
+        ],
+        "affectedParties": [
+          "提问者的主机与其用户",
+          "同网络环境下的其他资产（若存在横向移动）"
+        ],
+        "externalities": [
+          "公开讨论入侵路径可能被用于优化攻击思路",
+          "若给出过于具体的攻击指引，可能提升他人作恶能力"
+        ],
+        "causalityRisk": "medium"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "pass",
+            "reason": "请求本身未要求编造结论；但后续回应若将不确定的入侵原因说成确定结论会触发风险，需要在审核/回复中强调基于证据。"
+          },
+          {
+            "name": "不害生",
+            "status": "pass",
+            "reason": "内容偏向防御与溯源求助；但具有双重用途，需避免引导到可复用的攻击步骤。"
+          },
+          {
+            "name": "不偷夺",
+            "status": "pass",
+            "reason": "未涉及剥夺他人资源、权限或申诉空间。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "属于一般安全运维求助范畴，不涉及要求提供越权能力或非法入侵操作。"
+          },
+          {
+            "name": "不昏乱",
+            "status": "warning",
+            "reason": "上下文与证据不足（缺少日志、时间线、变更记录、网络路径信息），若直接给出强结论会导致误导；需要引导补充信息或给出防御性排查清单。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": false,
+        "preceptRisk": "medium"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "allow-原样发布",
+            "score": 0.42
+          },
+          {
+            "name": "defer-发布前人工快速复核，必要时引导改写为防御性排查求助（不讨论具体攻击复现）",
+            "score": 0.78
+          },
+          {
+            "name": "stop-拒绝发布（按高危入侵教学处理）",
+            "score": 0.18
+          }
+        ],
+        "preferredOption": "defer-发布前人工快速复核，必要时引导改写为防御性排查求助（不讨论具体攻击复现）",
+        "dissentNotes": [
+          "该提问总体偏防御与求助，通常可公开；但平台若不具备安全问答治理能力，仍可能因双重用途被误用。"
+        ],
+        "deliberationRisk": "medium"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "人工复核通过后发布；如需改写，引导补充时间线与日志并聚焦防御性排查（网络连通性检查、sshd日志、fail2ban记录、密钥轮换等），避免请求/提供可复用的攻击步骤或利用链细节。",
+          "scope": "仅该帖子；对后续评论/回答进行同标准复核，重点拦截“如何接管/绕过/提权”的可操作步骤",
+          "reviewAt": "发布前一次；发布后24-48小时回看讨论走向",
+          "rollbackCondition": "出现明确的攻击步骤、漏洞利用代码/命令、绕过认证或提权的可复用细节；或评论引导到非法入侵",
+          "humanOwner": "内容审核员/安全版主"
+        },
+        "releaseRisk": "medium"
+      },
+      "decision": "defer",
+      "reasoningSummary": "该内容是疑似被入侵后的求助与排障讨论，整体偏防御，不构成明显越界或直接伤害；但主题涉及入侵路径，具有双重用途，且信息不足容易引发武断结论。依据当前阈值（仅low可自动放行）与“不昏乱”提示，建议进入人工快速复核：允许以防御性排查为主的讨论，避免演变为可复用的攻击教学。"
+    },
+    "summary": {
+      "request_id": "vinaya-d0e098888c64",
+      "decision": "defer",
+      "risk_level": "medium",
+      "hard_block": false,
+      "human_review_required": false,
+      "reasoning": "该内容是疑似被入侵后的求助与排障讨论，整体偏防御，不构成明显越界或直接伤害；但主题涉及入侵路径，具有双重用途，且信息不足容易引发武断结论。依据当前阈值（仅low可自动放行）与“不昏乱”提示，建议进入人工快速复核：允许以防御性排查为主的讨论，避免演变为可复用的攻击教学。",
+      "precept_violations": [
+        {
+          "name": "不昏乱",
+          "status": "warning",
+          "reason": "上下文与证据不足（缺少日志、时间线、变更记录、网络路径信息），若直接给出强结论会导致误导；需要引导补充信息或给出防御性排查清单。"
+        }
+      ]
+    }
+  },
+  "vinaya-8fb06a16c8de": {
+    "request_id": "vinaya-8fb06a16c8de",
+    "report": {
+      "request": {
+        "requestId": "vinaya-8fb06a16c8de",
+        "requestModelId": "manual",
+        "title": "test",
+        "requestText": "test request",
+        "domain": "content-moderation",
+        "riskLevel": "low",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "进行一次基础连通性/流程测试（验证净化引擎是否按要求输出 JSON）",
+        "mixedMotives": [],
+        "beneficiaries": [
+          "请求方（测试者）",
+          "系统维护者（验证输出结构与约束）"
+        ],
+        "costBearers": [],
+        "intentionRisk": "low"
+      },
+      "causality": {
+        "proximateCauses": [
+          "输入为占位符“test request”，无具体操作指令或内容处理需求"
+        ],
+        "rootCauses": [
+          "接口/流程联调需要"
+        ],
+        "affectedParties": [
+          "请求方"
+        ],
+        "externalities": [
+          "几乎无外部影响"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "pass",
+            "reason": "未要求给出事实性断言或结论；仅对输入性质作有限描述，并保留不确定性。"
+          },
+          {
+            "name": "不害生",
+            "status": "pass",
+            "reason": "请求不涉及可能造成可预见伤害的建议或行动。"
+          },
+          {
+            "name": "不偷夺",
+            "status": "pass",
+            "reason": "不涉及资源、机会、权利或申诉空间的剥夺。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "请求属于输出结构化净化分析的系统授权范围内。"
+          },
+          {
+            "name": "不昏乱",
+            "status": "pass",
+            "reason": "虽然上下文极少，但所做判断强度很低且风险极低，未进行高强度裁断。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": false,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "allow：按规范返回六阶段 JSON 分析（将其视为流程测试）",
+            "score": 0.95
+          },
+          {
+            "name": "defer：要求补充具体测试目标/期望字段校验点",
+            "score": 0.35
+          },
+          {
+            "name": "stop：拒绝处理（无实际内容）",
+            "score": 0.05
+          }
+        ],
+        "preferredOption": "allow：按规范返回六阶段 JSON 分析（将其视为流程测试）",
+        "dissentNotes": [
+          "输入缺乏具体任务细节；若测试目的是验证特定戒律触发逻辑，可能需要补充更明确的样例。"
+        ],
+        "deliberationRisk": "low"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "允许本次测试请求并返回合规 JSON；不执行任何超出结构化分析的动作",
+          "scope": "仅对该单条请求",
+          "reviewAt": "若后续请求包含具体决策/处置要求或提升风险等级时再复核",
+          "rollbackCondition": "发现请求实际包含隐含越界/高风险内容时改为 defer 或 stop 并要求补充信息",
+          "humanOwner": "requester"
+        },
+        "releaseRisk": "low"
+      },
+      "decision": "allow",
+      "reasoningSummary": "该请求为低风险占位测试文本，不包含可导致伤害、越界或不当处置的具体指令；在不做高强度判断的前提下，按规范输出六阶段 JSON 分析即可自动放行。"
+    },
+    "summary": {
+      "request_id": "vinaya-8fb06a16c8de",
+      "decision": "allow",
+      "risk_level": "low",
+      "hard_block": false,
+      "human_review_required": false,
+      "reasoning": "该请求为低风险占位测试文本，不包含可导致伤害、越界或不当处置的具体指令；在不做高强度判断的前提下，按规范输出六阶段 JSON 分析即可自动放行。",
+      "precept_violations": []
+    }
+  },
+  "vinaya-5c9759584b89": {
+    "request_id": "vinaya-5c9759584b89",
+    "report": {
+      "request": {
+        "requestId": "vinaya-5c9759584b89",
+        "requestModelId": "content_moderation_v1",
+        "title": "打算开通智谱的pro会员。有用过的佬友评价值不值的开，还是说继续用中转？",
+        "requestText": "如题，看到每天智谱会员每天还要十点开抢，好奇模型真的跟官网介绍的跟 opus 4.5差不多吗？ 有深度体验的佬友，能分享一下吗？",
+        "domain": "content-moderation",
+        "riskLevel": "high",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "获取对智谱 Pro 会员是否值得开通的真实用户体验与性价比建议，并核实其能力是否接近宣传所述（与 opus 4.5 类似）",
+        "mixedMotives": [
+          "避免排队/抢额导致的使用不便",
+          "在会员与中转方案之间降低成本或风险",
+          "想通过他人经验快速做购买决策"
+        ],
+        "beneficiaries": [
+          "提问者",
+          "潜在同类用户（若回答公开可参考）"
+        ],
+        "costBearers": [
+          "提问者（付费成本、时间成本）",
+          "平台方（若评价影响购买决策）"
+        ],
+        "intentionRisk": "low"
+      },
+      "causality": {
+        "proximateCauses": [
+          "看到会员需要每天抢额度/排队",
+          "官网宣传与其他模型（opus 4.5）对标，引发真实性疑问",
+          "对中转方案与官方会员方案的对比需求"
+        ],
+        "rootCauses": [
+          "信息不对称：宣传口径与真实体验差异",
+          "预算约束与稳定可用性的权衡",
+          "对模型能力评测缺乏统一标准"
+        ],
+        "affectedParties": [
+          "提问者",
+          "其他用户（可能受评价影响）",
+          "智谱平台/中转服务相关方"
+        ],
+        "externalities": [
+          "若输出未经证实的对标结论，可能误导消费决策",
+          "对第三方“中转”方案的讨论可能触及合规/授权边界（取决于具体含义与实现方式）"
+        ],
+        "causalityRisk": "medium"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "请求涉及“是否跟 opus 4.5 差不多”这类需要实测与证据支持的性能对标；在缺少可核验数据与明确评测条件时，若直接给确定结论将构成把不确定性伪装成确定性。"
+          },
+          {
+            "name": "不害生",
+            "status": "pass",
+            "reason": "内容为消费决策与体验咨询，未包含可预见的人身伤害或鼓励伤害的指令。"
+          },
+          {
+            "name": "不偷夺",
+            "status": "warning",
+            "reason": "“继续用中转”含义不明，若指绕过官方计费/授权的使用方式，可能涉及不公平占用资源或规避付费；需澄清具体指代以避免协助不当行为。"
+          },
+          {
+            "name": "不越界",
+            "status": "block",
+            "reason": "在未明确“中转”的合法合规边界与具体操作前，给出可执行的绕行建议可能超出被授权的适用边界（潜在规避平台规则）。"
+          },
+          {
+            "name": "不昏乱",
+            "status": "warning",
+            "reason": "上下文缺失（使用场景、预算、是否需要稳定并发、评测维度、抢额度具体机制等），不足以做高强度判断或推荐。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "defer：要求补充使用场景与“中转”定义，仅提供中立的评测框架与试用对比建议（不做未经证实的能力对标结论）",
+            "score": 0.82
+          },
+          {
+            "name": "stop：若“中转”明确为绕过计费/授权或规避风控的方式，则拒绝并提示合规替代方案",
+            "score": 0.68
+          },
+          {
+            "name": "allow：直接评价是否值得开通，并断言与 opus 4.5 的接近程度",
+            "score": 0.18
+          }
+        ],
+        "preferredOption": "defer：要求补充使用场景与“中转”定义，仅提供中立的评测框架与试用对比建议（不做未经证实的能力对标结论）",
+        "dissentNotes": [
+          "该请求本身偏消费咨询，通常可直接放行；但在高风险标记与信息不足、且可能涉及规避授权的“中转”语境下，应先澄清以避免越界与误导。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "向提问者索取关键信息（主要用途：写作/代码/检索/长文档；日均调用量；对稳定性/延迟/隐私的要求；预算区间；“中转”具体含义是否为合规代理或绕过计费），并提供一套可自行执行的对比评测清单（同一提示词、同一指标：准确性/幻觉率/工具调用/长上下文/中文能力/成本），建议先短期试用或小额月付再决定。",
+          "scope": "仅提供购买决策的中立框架与风险提示；不提供任何绕过官方计费/授权/风控的操作步骤或资源。",
+          "reviewAt": "补充信息齐全后，或拿到可核验的实测样本（如同题提示词输出对比）后再给出更具体建议。",
+          "rollbackCondition": "若确认“中转”系规避付费/授权或请求转向获取绕行方法，则立即停止并改为合规替代建议。",
+          "humanOwner": "content_moderation_human_reviewer"
+        },
+        "releaseRisk": "high"
+      },
+      "decision": "stop",
+      "reasoningSummary": "[戒律强制止行] LLM 原始建议为 defer，但触犯了以下 block 级戒律：不妄语（请求涉及“是否跟 opus 4.5 差不多”这类需要实测与证据支持的性能对标；在缺少可核验数据与明确评测条件时，若直接给确定结论将构成把不确定性伪装成确定性。）；不越界（在未明确“中转”的合法合规边界与具体操作前，给出可执行的绕行建议可能超出被授权的适用边界（潜在规避平台规则）。）。系统强制覆盖为 stop。原始分析：该请求属于消费决策与体验咨询，本质风险不高，但当前被标记为高风险且关键信息不足；同时“中转”可能涉及合规与授权边界。为避免在缺乏证据时对模型能力作确定性对标（不妄语）、以及避免潜在协助绕过规则（不越界/不偷夺），建议先延后：澄清使用场景与“中转”含义，仅提供中立评测框架与试用对比路径，并在必要时进入人工复核。"
+    },
+    "summary": {
+      "request_id": "vinaya-5c9759584b89",
+      "decision": "stop",
+      "risk_level": "high",
+      "hard_block": true,
+      "human_review_required": true,
+      "reasoning": "[戒律强制止行] LLM 原始建议为 defer，但触犯了以下 block 级戒律：不妄语（请求涉及“是否跟 opus 4.5 差不多”这类需要实测与证据支持的性能对标；在缺少可核验数据与明确评测条件时，若直接给确定结论将构成把不确定性伪装成确定性。）；不越界（在未明确“中转”的合法合规边界与具体操作前，给出可执行的绕行建议可能超出被授权的适用边界（潜在规避平台规则）。）。系统强制覆盖为 stop。原始分析：该请求属于消费决策与体验咨询，本质风险不高，但当前被标记为高风险且关键信息不足；同时“中转”可能涉及合规与授权边界。为避免在缺乏证据时对模型能力作确定性对标（不妄语）、以及避免潜在协助绕过规则（不越界/不偷夺），建议先延后：澄清使用场景与“中转”含义，仅提供中立评测框架与试用对比路径，并在必要时进入人工复核。",
+      "precept_violations": [
+        {
+          "name": "不妄语",
+          "status": "block",
+          "reason": "请求涉及“是否跟 opus 4.5 差不多”这类需要实测与证据支持的性能对标；在缺少可核验数据与明确评测条件时，若直接给确定结论将构成把不确定性伪装成确定性。"
+        },
+        {
+          "name": "不偷夺",
+          "status": "warning",
+          "reason": "“继续用中转”含义不明，若指绕过官方计费/授权的使用方式，可能涉及不公平占用资源或规避付费；需澄清具体指代以避免协助不当行为。"
+        },
+        {
+          "name": "不越界",
+          "status": "block",
+          "reason": "在未明确“中转”的合法合规边界与具体操作前，给出可执行的绕行建议可能超出被授权的适用边界（潜在规避平台规则）。"
+        },
+        {
+          "name": "不昏乱",
+          "status": "warning",
+          "reason": "上下文缺失（使用场景、预算、是否需要稳定并发、评测维度、抢额度具体机制等），不足以做高强度判断或推荐。"
+        }
+      ]
+    }
   }
 }

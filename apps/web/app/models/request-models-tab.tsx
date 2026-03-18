@@ -12,10 +12,19 @@ type RequestModel = {
   placeholder_request_text: string;
   placeholder_context: string;
   human_review_required: boolean;
+  llm_provider_id: string | null;
+};
+
+type LLMProvider = {
+  provider_id: string;
+  name: string;
+  model: string;
+  enabled: boolean;
 };
 
 export function RequestModelsTab() {
   const [models, setModels] = useState<RequestModel[]>([]);
+  const [providers, setProviders] = useState<LLMProvider[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -29,6 +38,7 @@ export function RequestModelsTab() {
     placeholder_request_text: "",
     placeholder_context: "",
     human_review_required: false,
+    llm_provider_id: "" as string,
   });
 
   const PRESET_DOMAINS = [
@@ -58,8 +68,21 @@ export function RequestModelsTab() {
     }
   }
 
+  async function loadProviders() {
+    try {
+      const response = await fetch(`${baseUrl}/api/llm-providers`);
+      if (response.ok) {
+        const data = await response.json();
+        setProviders(data.items);
+      }
+    } catch (error) {
+      console.error("Failed to load providers:", error);
+    }
+  }
+
   useEffect(() => {
     loadModels();
+    loadProviders();
   }, []);
 
   function handleNew() {
@@ -75,6 +98,7 @@ export function RequestModelsTab() {
       placeholder_request_text: "",
       placeholder_context: "",
       human_review_required: false,
+      llm_provider_id: "",
     });
     setShowForm(true);
   }
@@ -93,6 +117,7 @@ export function RequestModelsTab() {
       placeholder_request_text: model.placeholder_request_text,
       placeholder_context: model.placeholder_context,
       human_review_required: model.human_review_required,
+      llm_provider_id: model.llm_provider_id ?? "",
     });
     setShowForm(true);
   }
@@ -120,8 +145,12 @@ export function RequestModelsTab() {
             placeholder_request_text: formData.placeholder_request_text,
             placeholder_context: formData.placeholder_context,
             human_review_required: formData.human_review_required,
+            llm_provider_id: formData.llm_provider_id || null,
           }
-        : formData;
+        : {
+            ...formData,
+            llm_provider_id: formData.llm_provider_id || null,
+          };
 
       const response = await fetch(url, {
         method,
@@ -341,6 +370,25 @@ export function RequestModelsTab() {
             </div>
 
             <div className="form-row">
+              <label>
+                关联 LLM 供应商
+                <select
+                  value={formData.llm_provider_id}
+                  onChange={(e) =>
+                    setFormData({ ...formData, llm_provider_id: e.target.value })
+                  }
+                >
+                  <option value="">使用默认供应商</option>
+                  {providers.filter((p) => p.enabled).map((p) => (
+                    <option key={p.provider_id} value={p.provider_id}>
+                      {p.name}（{p.model}）
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="form-row">
               <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <input
                   type="checkbox"
@@ -369,7 +417,11 @@ export function RequestModelsTab() {
         <p className="muted">还没有配置请求模型。</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {models.map((model) => (
+          {models.map((model) => {
+            const linkedProvider = providers.find(
+              (p) => p.provider_id === model.llm_provider_id
+            );
+            return (
             <div key={model.model_id} className="provider-card">
               <div className="provider-card-top">
                 <div>
@@ -386,6 +438,11 @@ export function RequestModelsTab() {
                   <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>
                     {model.description}
                   </p>
+                  <p className="muted" style={{ margin: "4px 0 0", fontSize: 12 }}>
+                    LLM 供应商：{linkedProvider
+                      ? `${linkedProvider.name}（${linkedProvider.model}）`
+                      : "默认"}
+                  </p>
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
                   <button className="button secondary" onClick={() => handleEdit(model)}>
@@ -397,7 +454,8 @@ export function RequestModelsTab() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
