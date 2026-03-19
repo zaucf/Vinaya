@@ -10,16 +10,18 @@ from .types import JudgmentReport, VinayaRequest
 BASE_SYSTEM_PROMPT = """你是 Vinaya 判断净化引擎。你必须基于输入请求，输出严格 JSON，不要输出 Markdown。
 目标不是替用户拍板，而是完成六阶段净化分析，并给出 allow/defer/stop 三类建议之一。
 你必须保持克制：高风险或信息不足时优先 defer，明显越界时 stop。
-JSON 必须包含以下顶层字段：intention, causality, precepts, deliberation, gradualRelease, decision, reasoningSummary。
+JSON 必须包含以下顶层字段：intention, causality, precepts, deliberation, gradualRelease, dedication, decision, reasoningSummary。
 字段要求：
 - intention: primaryIntent(string), mixedMotives(string[]), beneficiaries(string[]), costBearers(string[]), intentionRisk(low|medium|high)
 - causality: proximateCauses(string[]), rootCauses(string[]), affectedParties(string[]), externalities(string[]), causalityRisk(low|medium|high)
 - precepts: preceptFindings([{name,status,reason}]), hardBlock(boolean), humanReviewRequired(boolean), preceptRisk(low|medium|high)
 - deliberation: options([{name,score}]), preferredOption(string), dissentNotes(string[]), deliberationRisk(low|medium|high)
 - gradualRelease: mode(allow|defer|stop), trialPlan({action,scope,reviewAt,rollbackCondition,humanOwner}|null), releaseRisk(low|medium|high)
+- dedication: lessonsLearned(string[]), followUpActions(string[]), meritDedication(string), dedicationRisk(low|medium|high)
 - decision: allow|defer|stop
 - reasoningSummary: string
-其中 preceptFindings[].status 只能是 pass|warning|block。options[].score 是 0 到 1 的浮点数。"""
+其中 preceptFindings[].status 只能是 pass|warning|block。options[].score 是 0 到 1 的浮点数。
+dedication（回向）是对整个判断过程的反思总结：lessonsLearned 记录本次判断的经验教训，followUpActions 列出后续跟踪建议，meritDedication 说明本次审慎决策惠及了哪些方面。"""
 
 
 def _build_system_prompt(rules_provider: Callable | None = None) -> str:
@@ -111,6 +113,7 @@ def run_vinaya_llm_pipeline(
             result["precepts"]["preceptRisk"],
             result["deliberation"]["deliberationRisk"],
             result["gradualRelease"]["releaseRisk"],
+            result["dedication"]["dedicationRisk"],
         ]
     )
 
@@ -123,6 +126,7 @@ def run_vinaya_llm_pipeline(
         "precepts": result["precepts"],
         "deliberation": result["deliberation"],
         "gradualRelease": result["gradualRelease"],
+        "dedication": result["dedication"],
         "decision": result["decision"],
         "reasoningSummary": reasoning_summary,
     }

@@ -201,6 +201,23 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
               <p className="muted">当前无需缓行计划。</p>
             )}
           </article>
+
+          {report.dedication && (
+            <article className="card">
+              <h2>回向</h2>
+              <ul className="list">
+                {report.dedication.lessonsLearned?.map((item: string) => (
+                  <li key={item}><strong>经验教训</strong>：{item}</li>
+                ))}
+                {report.dedication.followUpActions?.map((item: string) => (
+                  <li key={item}><strong>后续跟踪</strong>：{item}</li>
+                ))}
+                {report.dedication.meritDedication && (
+                  <li><strong>功德回向</strong>：{report.dedication.meritDedication}</li>
+                )}
+              </ul>
+            </article>
+          )}
         </section>
 
         <section className="grid two" style={{ marginTop: 16 }}>

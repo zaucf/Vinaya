@@ -21,6 +21,7 @@ from packages.engine.vinaya_engine.pipeline import (
     rank_risk,
     resolve_decision,
     run_causality,
+    run_dedication,
     run_deliberation,
     run_gradual_release,
     run_intention,
@@ -28,13 +29,14 @@ from packages.engine.vinaya_engine.pipeline import (
 )
 from packages.engine.vinaya_engine.precept_enforcer import enforce_precepts
 
-# SSE 阶段定义（8 个阶段）
+# SSE 阶段定义（9 个阶段）
 STAGES = [
     {"key": "intention", "label": "发心", "message": "正在分析请求的真实意图和动机..."},
     {"key": "causality", "label": "观缘", "message": "正在追溯因果链和外部影响..."},
     {"key": "precepts", "label": "持戒", "message": "正在逐条校验五戒约束..."},
     {"key": "deliberation", "label": "辩义", "message": "正在权衡备选方案..."},
     {"key": "gradualRelease", "label": "缓行", "message": "正在制定渐进释放策略..."},
+    {"key": "dedication", "label": "回向", "message": "正在总结经验教训与功德回向..."},
     {"key": "decision", "label": "决策", "message": "正在综合各阶段结果做出决策..."},
     {"key": "enforce", "label": "戒律校验", "message": "正在执行硬约束校验..."},
     {"key": "summary", "label": "生成摘要", "message": "正在生成判断摘要..."},
@@ -47,6 +49,7 @@ MOCK_STAGE_RUNNERS = {
     "precepts": run_precepts,
     "deliberation": run_deliberation,
     "gradualRelease": run_gradual_release,
+    "dedication": run_dedication,
 }
 
 
@@ -83,6 +86,7 @@ def _build_summary(report: dict, request_id: str) -> JudgmentSummaryResponse:
         precepts.get("preceptRisk", "low"),
         report.get("deliberation", {}).get("deliberationRisk", "low"),
         report.get("gradualRelease", {}).get("releaseRisk", "low"),
+        report.get("dedication", {}).get("dedicationRisk", "low"),
     ]
     if "high" in risks:
         overall_risk = "high"
@@ -124,8 +128,8 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
         if use_mock:
             report = {"request": request}
 
-            # ── 阶段 0-4：逐步运行 Mock 引擎 ──
-            for i, stage in enumerate(STAGES[:5]):
+            # ── 阶段 0-5：逐步运行 Mock 引擎 ──
+            for i, stage in enumerate(STAGES[:6]):
                 yield _sse_event("stage_start", {
                     "stage": stage["key"],
                     "label": stage["label"],
@@ -144,12 +148,12 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
                     "result": result,
                 })
 
-            # ── 阶段 5：决策 ──
-            stage = STAGES[5]
+            # ── 阶段 6：决策 ──
+            stage = STAGES[6]
             yield _sse_event("stage_start", {
                 "stage": stage["key"],
                 "label": stage["label"],
-                "index": 5,
+                "index": 6,
                 "total": total,
                 "message": stage["message"],
             })
@@ -160,6 +164,7 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
                 report["precepts"]["preceptRisk"],
                 report["deliberation"]["deliberationRisk"],
                 report["gradualRelease"]["releaseRisk"],
+                report["dedication"]["dedicationRisk"],
             ])
             report["decision"] = decision
             report["reasoningSummary"] = (
@@ -173,13 +178,13 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
             yield _sse_event("stage_complete", {
                 "stage": stage["key"],
                 "label": stage["label"],
-                "index": 5,
+                "index": 6,
                 "result": {"decision": decision, "reasoningSummary": report["reasoningSummary"]},
             })
 
         else:
-            # ── LLM 模式：先推送前五阶段的 start，然后调用 LLM ──
-            for i, stage in enumerate(STAGES[:5]):
+            # ── LLM 模式：先推送前六阶段的 start，然后调用 LLM ──
+            for i, stage in enumerate(STAGES[:6]):
                 yield _sse_event("stage_start", {
                     "stage": stage["key"],
                     "label": stage["label"],
@@ -206,6 +211,7 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
                 ("precepts", report.get("precepts")),
                 ("deliberation", report.get("deliberation")),
                 ("gradualRelease", report.get("gradualRelease")),
+                ("dedication", report.get("dedication")),
             ]
             for i, (key, result) in enumerate(stage_keys_with_results):
                 stage = STAGES[i]
@@ -217,12 +223,12 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
                     "result": result,
                 })
 
-            # 阶段 5：决策
-            stage = STAGES[5]
+            # 阶段 6：决策
+            stage = STAGES[6]
             yield _sse_event("stage_start", {
                 "stage": stage["key"],
                 "label": stage["label"],
-                "index": 5,
+                "index": 6,
                 "total": total,
                 "message": stage["message"],
             })
@@ -230,19 +236,19 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
             yield _sse_event("stage_complete", {
                 "stage": stage["key"],
                 "label": stage["label"],
-                "index": 5,
+                "index": 6,
                 "result": {
                     "decision": report.get("decision"),
                     "reasoningSummary": report.get("reasoningSummary"),
                 },
             })
 
-        # ── 阶段 6：戒律校验（enforce_precepts）──
-        stage = STAGES[6]
+        # ── 阶段 7：戒律校验（enforce_precepts）──
+        stage = STAGES[7]
         yield _sse_event("stage_start", {
             "stage": stage["key"],
             "label": stage["label"],
-            "index": 6,
+            "index": 7,
             "total": total,
             "message": stage["message"],
         })
@@ -251,7 +257,7 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
         yield _sse_event("stage_complete", {
             "stage": stage["key"],
             "label": stage["label"],
-            "index": 6,
+            "index": 7,
             "result": {
                 "hardBlock": report.get("precepts", {}).get("hardBlock", False),
                 "decision": report.get("decision"),
@@ -259,12 +265,12 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
             },
         })
 
-        # ── 阶段 7：生成摘要 ──
-        stage = STAGES[7]
+        # ── 阶段 8：生成摘要 ──
+        stage = STAGES[8]
         yield _sse_event("stage_start", {
             "stage": stage["key"],
             "label": stage["label"],
-            "index": 7,
+            "index": 8,
             "total": total,
             "message": stage["message"],
         })
@@ -275,7 +281,7 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
         yield _sse_event("stage_complete", {
             "stage": stage["key"],
             "label": stage["label"],
-            "index": 7,
+            "index": 8,
             "result": summary.model_dump(),
         })
 

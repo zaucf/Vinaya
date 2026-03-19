@@ -274,6 +274,42 @@ export default async function LedgerPage({
           )}
         </article>
       </section>
+
+      {/* 回向 */}
+      {report.dedication && (
+        <section className="grid" style={{ marginTop: 16 }}>
+          <article className="card">
+            <h2>
+              回向 <RiskPill level={report.dedication.dedicationRisk} />
+            </h2>
+            {report.dedication.lessonsLearned && report.dedication.lessonsLearned.length > 0 && (
+              <>
+                <h3 style={{ fontSize: 14, marginBottom: 8 }}>经验教训</h3>
+                <ul className="list">
+                  {report.dedication.lessonsLearned.map((item: string) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {report.dedication.followUpActions && report.dedication.followUpActions.length > 0 && (
+              <>
+                <h3 style={{ fontSize: 14, marginTop: 12, marginBottom: 8 }}>后续跟踪</h3>
+                <ul className="list">
+                  {report.dedication.followUpActions.map((item: string) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {report.dedication.meritDedication && (
+              <p className="muted" style={{ marginTop: 12 }}>
+                <strong>功德回向：</strong>{report.dedication.meritDedication}
+              </p>
+            )}
+          </article>
+        </section>
+      )}
     </main>
   );
 }

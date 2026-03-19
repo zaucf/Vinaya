@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from .types import (
     CausalityResult,
     Decision,
+    DedicationResult,
     DeliberationResult,
     GradualReleaseResult,
     IntentionResult,
@@ -130,6 +131,47 @@ def run_gradual_release(request: VinayaRequest) -> GradualReleaseResult:
     }
 
 
+def run_dedication(request: VinayaRequest) -> DedicationResult:
+    if request["riskLevel"] == "high":
+        return {
+            "lessonsLearned": [
+                "高风险请求不应绕过人工复核",
+                "系统克制优先于效率提升",
+            ],
+            "followUpActions": [
+                "48 小时内由人工负责人确认最终处置",
+                "将本次判断纳入高风险案例库以供后续参考",
+            ],
+            "meritDedication": "本次审慎决策保护了被决策对象免受不可回退伤害，功德回向所有受影响方。",
+            "dedicationRisk": "high",
+        }
+
+    if request["riskLevel"] == "medium":
+        return {
+            "lessonsLearned": [
+                "中等风险下仍需保持克制",
+                "试行方案需设置明确的回退条件",
+            ],
+            "followUpActions": [
+                "在试行期结束后复盘执行效果",
+                "记录本次判断路径供后续类似请求参考",
+            ],
+            "meritDedication": "本次判断在效率与审慎之间取得平衡，功德回向请求提交者与受影响的业务流程。",
+            "dedicationRisk": "medium",
+        }
+
+    return {
+        "lessonsLearned": [
+            "低风险请求同样经过了完整净化流程",
+        ],
+        "followUpActions": [
+            "定期回顾低风险判断是否出现漏判",
+        ],
+        "meritDedication": "本次判断虽风险可控，仍以完整流程确保无遗漏，功德回向所有参与方。",
+        "dedicationRisk": "low",
+    }
+
+
 def resolve_decision(
     request: VinayaRequest,
     precepts: PreceptResult,
@@ -148,6 +190,7 @@ def run_vinaya_pipeline(request: VinayaRequest) -> JudgmentReport:
     precepts = run_precepts(request)
     deliberation = run_deliberation(request)
     gradual_release = run_gradual_release(request)
+    dedication = run_dedication(request)
     decision = resolve_decision(request, precepts, gradual_release)
     overall_risk = rank_risk(
         [
@@ -156,6 +199,7 @@ def run_vinaya_pipeline(request: VinayaRequest) -> JudgmentReport:
             precepts["preceptRisk"],
             deliberation["deliberationRisk"],
             gradual_release["releaseRisk"],
+            dedication["dedicationRisk"],
         ]
     )
 
@@ -166,6 +210,7 @@ def run_vinaya_pipeline(request: VinayaRequest) -> JudgmentReport:
         "precepts": precepts,
         "deliberation": deliberation,
         "gradualRelease": gradual_release,
+        "dedication": dedication,
         "decision": decision,
         "reasoningSummary": f"综合判断为 {overall_risk} 风险，但当前可在受控范围内推进。"
         if decision == "allow"

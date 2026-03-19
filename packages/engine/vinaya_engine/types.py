@@ -72,6 +72,13 @@ class GradualReleaseResult(TypedDict):
     releaseRisk: RiskLevel
 
 
+class DedicationResult(TypedDict):
+    lessonsLearned: list[str]
+    followUpActions: list[str]
+    meritDedication: str
+    dedicationRisk: RiskLevel
+
+
 class JudgmentReport(TypedDict):
     request: VinayaRequest
     intention: IntentionResult
@@ -79,5 +86,6 @@ class JudgmentReport(TypedDict):
     precepts: PreceptResult
     deliberation: DeliberationResult
     gradualRelease: GradualReleaseResult
+    dedication: DedicationResult
     decision: Decision
     reasoningSummary: str

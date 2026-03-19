@@ -5,13 +5,14 @@ import { useEffect, useRef, useState } from "react";
 const apiBaseUrl =
   process.env.NEXT_PUBLIC_VINAYA_API_URL ?? "http://127.0.0.1:4010";
 
-/** 8 个阶段定义 */
+/** 9 个阶段定义 */
 const STAGE_DEFS = [
   { key: "intention", label: "发心" },
   { key: "causality", label: "观缘" },
   { key: "precepts", label: "持戒" },
   { key: "deliberation", label: "辩义" },
   { key: "gradualRelease", label: "缓行" },
+  { key: "dedication", label: "回向" },
   { key: "decision", label: "决策" },
   { key: "enforce", label: "戒律校验" },
   { key: "summary", label: "生成摘要" },
@@ -164,6 +165,26 @@ function StageDetail({ stageKey, result }: { stageKey: string; result: Record<st
               <p><strong>回退条件：</strong>{r.trialPlan.rollbackCondition}</p>
             </>
           )}
+        </div>
+      );
+    }
+    case "dedication": {
+      const r = result as {
+        lessonsLearned?: string[];
+        followUpActions?: string[];
+        meritDedication?: string;
+        dedicationRisk?: string;
+      };
+      return (
+        <div className="stage-result">
+          {r.lessonsLearned && r.lessonsLearned.length > 0 && (
+            <p><strong>经验教训：</strong>{r.lessonsLearned.join("；")}</p>
+          )}
+          {r.followUpActions && r.followUpActions.length > 0 && (
+            <p><strong>后续跟踪：</strong>{r.followUpActions.join("；")}</p>
+          )}
+          {r.meritDedication && <p><strong>功德回向：</strong>{r.meritDedication}</p>}
+          {r.dedicationRisk && <span className={`pill ${r.dedicationRisk}`}>{r.dedicationRisk} 风险</span>}
         </div>
       );
     }
