@@ -1,4 +1,5 @@
 import { RequestForm } from "./request-form";
+import { NavBar } from "./nav-bar";
 
 const principles = [
   "先净化判断，再允许执行",
@@ -28,26 +29,7 @@ const outputs = [
 export default function HomePage() {
   return (
     <main>
-      <nav className="top-bar">
-        <a href="/" className="brand">Vinaya · 戒定慧引擎</a>
-        <div className="nav-links">
-          <a className="button nav-button" href="/dashboard">
-            判断看板
-          </a>
-          <a className="button nav-button" href="/requests">
-            历史请求
-          </a>
-          <a className="button nav-button" href="/models">
-            模型中心
-          </a>
-          <a className="button nav-button" href="/rules">
-            规则说明
-          </a>
-          <a className="button nav-button" href="/cases">
-            案例库
-          </a>
-        </div>
-      </nav>
+      <NavBar />
 
       <div className="hero">
         <h1>在 AI 失控之前，拦住它。</h1>

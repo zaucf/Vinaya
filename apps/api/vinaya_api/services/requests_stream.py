@@ -16,6 +16,7 @@ from apps.api.vinaya_api.schemas import (
     RequestReportResponse,
 )
 from apps.api.vinaya_api.services.rules import get_rules_config
+from apps.api.vinaya_api.services.notifications import create_notification
 from packages.engine.vinaya_engine.llm_pipeline import run_vinaya_llm_pipeline
 from packages.engine.vinaya_engine.pipeline import (
     mock_classify_risk,
@@ -124,6 +125,7 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
         "domain": payload.domain,
         "riskLevel": payload.risk_level,
         "context": payload.context or "",
+        "submitter": payload.submitter or "anonymous",
     }
     total = len(STAGES)
     use_mock = os.getenv("VINAYA_USE_MOCK_ENGINE", "false").lower() == "true"
@@ -350,6 +352,25 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
             "index": summary_idx,
             "result": summary.model_dump(),
         })
+
+        # ── 自动通知（defer / stop / human_review） ──
+        decision = summary.decision
+        if decision in ("defer", "stop"):
+            await asyncio.to_thread(
+                create_notification,
+                request_id=request_id,
+                title=f"判断结果：{'缓行' if decision == 'defer' else '止行'} — {payload.title}",
+                message=summary.reasoning,
+                notification_type=decision,
+            )
+        if summary.human_review_required and decision not in ("defer", "stop"):
+            await asyncio.to_thread(
+                create_notification,
+                request_id=request_id,
+                title=f"需人工复核 — {payload.title}",
+                message=summary.reasoning,
+                notification_type="human_review",
+            )
 
         # ── 完成 ──
         yield _sse_event("done", {

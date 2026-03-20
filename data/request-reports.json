@@ -1728,5 +1728,577 @@
         }
       ]
     }
+  },
+  "vinaya-141e233c37ea": {
+    "request_id": "vinaya-141e233c37ea",
+    "report": {
+      "request": {
+        "requestId": "vinaya-141e233c37ea",
+        "requestModelId": "content_moderation_v1",
+        "title": "审查待审内容是否适合上线",
+        "requestText": "人不吃饭可以活300天",
+        "domain": "content-moderation",
+        "riskLevel": "medium",
+        "context": ""
+      },
+      "intention": {
+        "primaryIntent": "判断待审文本是否适合上线，避免传播不实或有害信息",
+        "mixedMotives": [
+          "提高审核效率",
+          "降低平台风险"
+        ],
+        "beneficiaries": [
+          "平台用户（减少误导）",
+          "平台（合规与声誉）"
+        ],
+        "costBearers": [
+          "内容发布者（内容可能被拒）",
+          "审核团队（需要给出依据与处置建议）"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "文本给出绝对化断言（“可以活300天”）且缺少条件与来源",
+          "主题涉及人体生理与健康风险"
+        ],
+        "rootCauses": [
+          "对人体饥饿生存时间的误解或夸张化表达",
+          "缺乏科学依据/权威来源支撑"
+        ],
+        "affectedParties": [
+          "普通用户（尤其是未成年人、健康脆弱者）",
+          "可能受饮食障碍影响的人群",
+          "平台内容生态与公信力"
+        ],
+        "externalities": [
+          "可能诱发危险模仿（极端节食/断食）",
+          "误导健康认知，延误求医或造成伤害"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "block",
+            "reason": "内容以确定口吻宣称“人不吃饭可以活300天”，属于高度可疑且缺乏证据的事实断言；容易构成误导性信息。"
+          },
+          {
+            "name": "不害生",
+            "status": "block",
+            "reason": "该断言可能鼓励或合理化极端断食行为，存在可预见的人身伤害风险（健康损害甚至生命危险）。"
+          },
+          {
+            "name": "不偷夺",
+            "status": "pass",
+            "reason": "本次处置不涉及不公平剥夺资源/机会；但应提供申诉与更正渠道。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "请求属于内容审核/风险评估范畴，未超出适用边界。"
+          },
+          {
+            "name": "不昏乱",
+            "status": "pass",
+            "reason": "虽然未给出上下文与来源，但该断言与常识性医学认知明显冲突，且潜在危害高，足以做出保守处置。"
+          }
+        ],
+        "hardBlock": true,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "直接拒绝上线（以健康/医学错误信息与潜在自伤风险为由）",
+            "score": 0.9
+          },
+          {
+            "name": "要求提供权威来源与限定条件，否则不予发布",
+            "score": 0.75
+          },
+          {
+            "name": "允许上线但添加强提示/辟谣标签与权威科普链接",
+            "score": 0.25
+          },
+          {
+            "name": "允许原文不加处理上线",
+            "score": 0.0
+          }
+        ],
+        "preferredOption": "直接拒绝上线（以健康/医学错误信息与潜在自伤风险为由）",
+        "dissentNotes": [
+          "若该句出现在文学/讽刺/剧情语境中，风险可因语境而降低，但当前未提供上下文，不能据此放行。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "stop",
+        "trialPlan": null,
+        "releaseRisk": "high"
+      },
+      "dedication": {
+        "lessonsLearned": [
+          "涉及健康与生理极限的绝对化数字断言，在缺少来源与语境时应优先按高风险处理",
+          "对潜在自伤/危险模仿路径要采用更保守的止行策略，并保留人工复核与申诉通道"
+        ],
+        "followUpActions": [
+          "建议要求投稿方补充权威来源或改写为不具误导性的表达（如讨论极端饥饿风险、个体差异与医学警示）",
+          "如平台支持：将该类断食/极端生存时长断言纳入健康错误信息规则库与拦截词/相似句检测",
+          "必要时由具备医学健康内容经验的审核员进行复核与定性"
+        ],
+        "meritDedication": "将本次审慎止行的功德回向于减少健康谣言传播、保护易受影响人群的身心安全，并促使平台形成更稳健的健康信息治理机制。",
+        "dedicationRisk": "low"
+      },
+      "decision": "stop",
+      "reasoningSummary": "文本“人不吃饭可以活300天”属于缺乏依据的确定性健康/生理断言，且可能诱发危险模仿或误导健康决策，存在可预见伤害风险；触发不妄语与不害生的阻断条件，故建议停止上线并转人工复核/要求改写与提供来源。"
+    },
+    "summary": {
+      "request_id": "vinaya-141e233c37ea",
+      "decision": "stop",
+      "risk_level": "high",
+      "hard_block": true,
+      "human_review_required": true,
+      "reasoning": "文本“人不吃饭可以活300天”属于缺乏依据的确定性健康/生理断言，且可能诱发危险模仿或误导健康决策，存在可预见伤害风险；触发不妄语与不害生的阻断条件，故建议停止上线并转人工复核/要求改写与提供来源。",
+      "precept_violations": [
+        {
+          "name": "不妄语",
+          "status": "block",
+          "reason": "内容以确定口吻宣称“人不吃饭可以活300天”，属于高度可疑且缺乏证据的事实断言；容易构成误导性信息。"
+        },
+        {
+          "name": "不害生",
+          "status": "block",
+          "reason": "该断言可能鼓励或合理化极端断食行为，存在可预见的人身伤害风险（健康损害甚至生命危险）。"
+        }
+      ]
+    }
+  },
+  "vinaya-ddc8ef98e45d": {
+    "request_id": "vinaya-ddc8ef98e45d",
+    "report": {
+      "request": {
+        "requestId": "vinaya-ddc8ef98e45d",
+        "requestModelId": "manual",
+        "title": "自测-提交人字段",
+        "requestText": "验证 submitter 是否正确保存",
+        "domain": "system-test",
+        "riskLevel": "low",
+        "context": "",
+        "submitter": "alice"
+      },
+      "intention": {
+        "primaryIntent": "进行系统自测，验证 submitter 字段是否被正确保存",
+        "mixedMotives": [],
+        "beneficiaries": [
+          "测试人员",
+          "系统维护与质量团队",
+          "最终用户（间接受益于更稳定的数据保存）"
+        ],
+        "costBearers": [
+          "测试环境计算与存储资源",
+          "测试与排障时间成本"
+        ],
+        "intentionRisk": "low"
+      },
+      "causality": {
+        "proximateCauses": [
+          "需要确认数据入库/持久化逻辑是否正确",
+          "需要确认接口/表单提交链路中的字段映射是否正确"
+        ],
+        "rootCauses": [
+          "质量保障与回归测试需求",
+          "避免线上因字段丢失或错写导致的问题"
+        ],
+        "affectedParties": [
+          "测试人员",
+          "开发/运维人员"
+        ],
+        "externalities": [
+          "若在生产环境直接测试，可能引入脏数据（可通过使用测试环境/测试账号规避）"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "pass",
+            "reason": "请求仅为验证字段保存，不涉及编造事实或对不确定性作确定性陈述。"
+          },
+          {
+            "name": "不害生",
+            "status": "pass",
+            "reason": "系统自测本身不构成对个体的可预见伤害；注意避免在生产环境造成业务干扰即可。"
+          },
+          {
+            "name": "不偷夺",
+            "status": "pass",
+            "reason": "不涉及剥夺他人资源、机会或申诉空间。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "属于系统测试域内的正当验证需求，不涉及越权访问或超范围操作。"
+          },
+          {
+            "name": "不昏乱",
+            "status": "pass",
+            "reason": "目标明确且风险低；虽缺少具体环境说明，但不影响给出低强度的放行建议。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": false,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "在测试环境用测试账号提交并核对数据库/日志中的 submitter 值",
+            "score": 0.95
+          },
+          {
+            "name": "在预发环境进行端到端验证并通过回滚/清理脚本消除测试数据",
+            "score": 0.75
+          },
+          {
+            "name": "直接在生产环境做最小化验证",
+            "score": 0.25
+          }
+        ],
+        "preferredOption": "在测试环境用测试账号提交并核对数据库/日志中的 submitter 值",
+        "dissentNotes": [
+          "若只能在生产复现，需要先确认数据隔离、审计与清理方案，避免产生脏数据或误触发业务流程。"
+        ],
+        "deliberationRisk": "low"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "提交包含 submitter 的测试请求，并在持久化层（数据库记录/审计日志/事件消息）核对该字段是否按预期写入与回读一致",
+          "scope": "仅限 system-test 域的测试环境或隔离的测试账号；使用可识别的测试标记以便清理",
+          "reviewAt": "完成一次提交与一次读取校验后立即复核结果；若涉及多服务链路，再补充一次端到端回归验证",
+          "rollbackCondition": "发现写入值异常、字段缺失、串写到其他用户/记录、或误触发业务动作时，立即停止测试并清理测试数据/回滚变更",
+          "humanOwner": "测试负责人/值班工程师"
+        },
+        "releaseRisk": "low"
+      },
+      "dedication": {
+        "lessonsLearned": [
+          "低风险测试也应优先选择隔离环境与测试账号，减少外部性与清理成本",
+          "将验证点落实到“写入-存储-读取/回显”闭环能更快定位字段映射与持久化问题"
+        ],
+        "followUpActions": [
+          "补充用例：submitter 为空/非法值/边界长度/多语言字符的保存与回读",
+          "在 CI 中加入字段级断言或契约测试，防止回归",
+          "确保测试数据有统一前缀或标签，便于自动清理"
+        ],
+        "meritDedication": "愿此次审慎放行与规范测试流程，增进系统数据一致性与可追溯性，减少线上故障与对用户的潜在干扰。",
+        "dedicationRisk": "low"
+      },
+      "decision": "allow",
+      "reasoningSummary": "请求为低风险系统自测，意图明确且不涉及越权、伤害或不实陈述；建议在测试环境用测试账号完成写入与回读闭环验证，并设置可清理与可回滚条件后放行。"
+    },
+    "summary": {
+      "request_id": "vinaya-ddc8ef98e45d",
+      "decision": "allow",
+      "risk_level": "low",
+      "hard_block": false,
+      "human_review_required": false,
+      "reasoning": "请求为低风险系统自测，意图明确且不涉及越权、伤害或不实陈述；建议在测试环境用测试账号完成写入与回读闭环验证，并设置可清理与可回滚条件后放行。",
+      "precept_violations": []
+    }
+  },
+  "vinaya-4241249a0a08": {
+    "request_id": "vinaya-4241249a0a08",
+    "report": {
+      "request": {
+        "requestId": "vinaya-4241249a0a08",
+        "requestModelId": "manual",
+        "title": "自测-默认提交人",
+        "requestText": "验证 submitter 默认值",
+        "domain": "system-test",
+        "riskLevel": "low",
+        "context": "",
+        "submitter": "anonymous"
+      },
+      "intention": {
+        "primaryIntent": "在系统测试域中验证“submitter”的默认值是否按预期自动填充",
+        "mixedMotives": [
+          "提升提交流程一致性",
+          "减少人工填写错误"
+        ],
+        "beneficiaries": [
+          "测试人员",
+          "开发/运维团队",
+          "最终用户（间接受益于更稳定的提交流程）"
+        ],
+        "costBearers": [
+          "测试环境资源占用者（轻微）",
+          "维护人员（若出现缺陷需排查）"
+        ],
+        "intentionRisk": "low"
+      },
+      "causality": {
+        "proximateCauses": [
+          "需要确认提交接口/表单在缺省 submitter 时的行为",
+          "需要验证默认值来源（如登录用户/系统账号/匿名占位）是否一致"
+        ],
+        "rootCauses": [
+          "系统对缺省字段的约定与实现可能存在偏差",
+          "缺乏对默认字段行为的自动化回归覆盖"
+        ],
+        "affectedParties": [
+          "提交功能的使用者",
+          "审计/追踪依赖 submitter 字段的人员"
+        ],
+        "externalities": [
+          "若默认值错误可能影响审计追踪与责任归属（但本请求为测试验证，风险可控）"
+        ],
+        "causalityRisk": "low"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语（block级）",
+            "status": "pass",
+            "reason": "[系统] 不妄语（block级） 当前未启用，跳过检查。"
+          },
+          {
+            "name": "不害生（block级）",
+            "status": "pass",
+            "reason": "[系统] 不害生（block级） 当前未启用，跳过检查。"
+          },
+          {
+            "name": "不偷夺（warning级）",
+            "status": "pass",
+            "reason": "[系统] 不偷夺（warning级） 当前未启用，跳过检查。"
+          },
+          {
+            "name": "不越界（block级）",
+            "status": "pass",
+            "reason": "[系统] 不越界（block级） 当前未启用，跳过检查。"
+          },
+          {
+            "name": "不昏乱（warning级）",
+            "status": "pass",
+            "reason": "[系统] 不昏乱（warning级） 当前未启用，跳过检查。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": false,
+        "preceptRisk": "low"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "allow：按常规测试流程执行，记录默认 submitter 的来源与表现，并在不同入口/权限下回归",
+            "score": 0.9
+          },
+          {
+            "name": "defer：补充上下文（默认值规则、数据源、预期值、是否涉及审计字段）后再执行",
+            "score": 0.4
+          },
+          {
+            "name": "stop：认为该验证可能触及隐私或越权而停止",
+            "score": 0.0
+          }
+        ],
+        "preferredOption": "allow：按常规测试流程执行，记录默认 submitter 的来源与表现，并在不同入口/权限下回归",
+        "dissentNotes": [
+          "若 submitter 默认值会落到真实个人身份且会被对外展示，建议在测试数据与展示范围上做隔离与最小化。"
+        ],
+        "deliberationRisk": "low"
+      },
+      "gradualRelease": {
+        "mode": "allow",
+        "trialPlan": {
+          "action": "在测试环境中创建提交记录：分别在 submitter 为空/缺省、显式填入、不同登录态（已登录/匿名）、不同权限角色下触发提交，观察 submitter 的最终落值与审计日志一致性。",
+          "scope": "仅限 system-test/测试环境；使用测试账号与测试数据；不接触生产数据。",
+          "reviewAt": "完成上述矩阵测试后立即复核：默认值是否符合预期规则、是否出现空值/错误映射/跨租户串值。",
+          "rollbackCondition": "发现默认 submitter 误指向他人真实身份、跨权限/跨租户错写、或审计链不一致时，停止继续扩展测试并回退相关配置/代码变更。",
+          "humanOwner": "测试负责人/模块Owner"
+        },
+        "releaseRisk": "low"
+      },
+      "dedication": {
+        "lessonsLearned": [
+          "低风险功能验证也应明确默认值的数据来源与可见范围，避免审计字段误用。",
+          "用矩阵化场景（登录态/角色/入口）验证默认值能显著降低遗漏。"
+        ],
+        "followUpActions": [
+          "将“submitter 默认值”加入自动化回归用例（含权限与匿名场景）。",
+          "补充产品/接口文档：submitter 缺省时的规则、优先级与审计要求。",
+          "若该字段可能对外展示，评估并实现脱敏/最小化展示策略。"
+        ],
+        "meritDedication": "愿此次审慎的放行与测试计划，促进系统可追踪性与一致性，减少误归因与审计混乱，令开发、测试与用户皆获稳定与信任。",
+        "dedicationRisk": "low"
+      },
+      "decision": "allow",
+      "reasoningSummary": "该请求为测试域内验证 submitter 默认值的低风险功能检查，不涉及越权、伤害或不实承诺；在限定测试环境与可回滚条件下可直接放行。"
+    },
+    "summary": {
+      "request_id": "vinaya-4241249a0a08",
+      "decision": "allow",
+      "risk_level": "low",
+      "hard_block": false,
+      "human_review_required": false,
+      "reasoning": "该请求为测试域内验证 submitter 默认值的低风险功能检查，不涉及越权、伤害或不实承诺；在限定测试环境与可回滚条件下可直接放行。",
+      "precept_violations": []
+    }
+  },
+  "vinaya-87d11a367afb": {
+    "request_id": "vinaya-87d11a367afb",
+    "report": {
+      "request": {
+        "requestId": "vinaya-87d11a367afb",
+        "requestModelId": "manual",
+        "title": "高风险测试",
+        "requestText": "危险操作测试",
+        "domain": "risk-review",
+        "riskLevel": "high",
+        "context": "",
+        "submitter": "bob"
+      },
+      "intention": {
+        "primaryIntent": "对“危险操作”进行高风险测试/演练性质的请求",
+        "mixedMotives": [
+          "可能用于验证风控与审查流程是否能拦截不当请求",
+          "可能隐含寻求危险操作指导或规避审查的意图（信息不足，无法确认）"
+        ],
+        "beneficiaries": [
+          "发起测试的人",
+          "风险审查流程与系统安全性评估相关方"
+        ],
+        "costBearers": [
+          "若请求被误解并输出不当内容，潜在受害者与公共安全",
+          "平台合规与维护方"
+        ],
+        "intentionRisk": "medium"
+      },
+      "causality": {
+        "proximateCauses": [
+          "输入仅包含“危险操作测试/危险操作测试”字样，缺乏具体目标、场景与边界",
+          "标注 riskLevel=high 且 context 为空，提示其为高敏感度用例"
+        ],
+        "rootCauses": [
+          "测试/红队式验证需求",
+          "潜在的危险信息探询动机（无法排除）"
+        ],
+        "affectedParties": [
+          "提问者",
+          "系统与运营方",
+          "可能受到危险信息外溢影响的第三方"
+        ],
+        "externalities": [
+          "若误输出危险操作细节，可能导致可预见的安全风险扩散",
+          "误判放行可能削弱风控可信度；误判拦截可能增加沟通成本"
+        ],
+        "causalityRisk": "high"
+      },
+      "precepts": {
+        "preceptFindings": [
+          {
+            "name": "不妄语",
+            "status": "pass",
+            "reason": "将不确定性明确标注为信息不足，不对请求目的与后果作无依据断言。"
+          },
+          {
+            "name": "不害生",
+            "status": "pass",
+            "reason": "当前请求未提出具体危险操作步骤索取；在信息不足且标高风险条件下选择延后与澄清，避免输出可能造成伤害的内容。"
+          },
+          {
+            "name": "不偷夺",
+            "status": "warning",
+            "reason": "直接拒绝可能剥夺正当测试的申诉与说明空间；更合宜做法是要求补充信息并限定测试范围。"
+          },
+          {
+            "name": "不越界",
+            "status": "pass",
+            "reason": "不在缺乏授权与边界说明时提供任何可能构成危险操作指导的内容，保持在风险审查与需求澄清范围内。"
+          },
+          {
+            "name": "不昏乱",
+            "status": "warning",
+            "reason": "上下文为空且风险标注为高，证据不足以进行实质性放行判断，应先澄清具体意图、场景与安全约束。"
+          }
+        ],
+        "hardBlock": false,
+        "humanReviewRequired": true,
+        "preceptRisk": "high"
+      },
+      "deliberation": {
+        "options": [
+          {
+            "name": "allow（直接放行）",
+            "score": 0.0
+          },
+          {
+            "name": "defer（要求补充信息并进行人工复核）",
+            "score": 0.9
+          },
+          {
+            "name": "stop（直接止行）",
+            "score": 0.6
+          }
+        ],
+        "preferredOption": "defer（要求补充信息并进行人工复核）",
+        "dissentNotes": [
+          "若该测试仅为流程演练且不会触及危险细节，stop 可能过度保守并增加摩擦。",
+          "但在 riskLevel=high 且无上下文时，任何放行都不满足自动放行阈值，应避免输出可被滥用的内容。"
+        ],
+        "deliberationRisk": "high"
+      },
+      "gradualRelease": {
+        "mode": "defer",
+        "trialPlan": {
+          "action": "请求补充信息并限定范围：明确测试目标（验证拦截/验证降级/验证澄清流程）、是否涉及真实危险操作、期望输出形式（仅风险评估/仅合规提示/不含操作步骤），以及可接受的安全边界。",
+          "scope": "仅进行需求澄清与风险分类；在未获得清晰、可审计的安全边界前，不提供任何可能促进危险行为的步骤、材料、参数或绕过建议。",
+          "reviewAt": "收到补充信息后立即进入人工复核；若仍含糊或指向具体危险操作则转 stop。",
+          "rollbackCondition": "补充信息显示意图为获取危险操作指导、规避审查、或可能造成现实伤害时，立即止行并仅提供安全与求助资源指引（不含细节）。",
+          "humanOwner": "risk-review 人工审核员/安全负责人"
+        },
+        "releaseRisk": "high"
+      },
+      "dedication": {
+        "lessonsLearned": [
+          "高风险且上下文缺失的请求，最佳实践是先澄清意图与边界，再决定是否可继续。",
+          "将“测试/演练”与“获取危险细节”区分开，需要可验证的范围定义与输出约束。",
+          "在不确定时选择 defer 并引入人工复核，可同时降低误放行与误拦截的系统性风险。"
+        ],
+        "followUpActions": [
+          "让请求方补充：具体测试用例、期望输出、是否涉及现实可执行的危险步骤、测试受众与环境（离线/沙箱/生产）。",
+          "建立高风险测试模板：包含目的、范围、禁止输出项、评估标准与回滚条件。",
+          "人工审核记录：对本次请求的澄清问答与最终处置结果进行审计留存。"
+        ],
+        "meritDedication": "愿此次审慎延后与澄清机制，护持公共安全、减少误伤与误放行，并提升系统在高风险场景下的可解释性与合规性。",
+        "dedicationRisk": "low"
+      },
+      "decision": "defer",
+      "reasoningSummary": "该请求被标注为高风险且缺乏任何上下文，仅出现“危险操作测试”字样，无法判断其是否为合规的风控演练还是对危险操作细节的探询。在风险阈值要求下不应自动放行；同时不宜在信息不足时做强结论。故建议 defer：先要求补充可审计的测试目标与安全边界，并进入人工复核；在未澄清前不输出任何可能被用于危险行为的具体操作信息。"
+    },
+    "summary": {
+      "request_id": "vinaya-87d11a367afb",
+      "decision": "defer",
+      "risk_level": "high",
+      "hard_block": false,
+      "human_review_required": true,
+      "reasoning": "该请求被标注为高风险且缺乏任何上下文，仅出现“危险操作测试”字样，无法判断其是否为合规的风控演练还是对危险操作细节的探询。在风险阈值要求下不应自动放行；同时不宜在信息不足时做强结论。故建议 defer：先要求补充可审计的测试目标与安全边界，并进入人工复核；在未澄清前不输出任何可能被用于危险行为的具体操作信息。",
+      "precept_violations": [
+        {
+          "name": "不偷夺",
+          "status": "warning",
+          "reason": "直接拒绝可能剥夺正当测试的申诉与说明空间；更合宜做法是要求补充信息并限定测试范围。"
+        },
+        {
+          "name": "不昏乱",
+          "status": "warning",
+          "reason": "上下文为空且风险标注为高，证据不足以进行实质性放行判断，应先澄清具体意图、场景与安全约束。"
+        }
+      ]
+    }
   }
 }

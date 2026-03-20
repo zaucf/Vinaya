@@ -19,6 +19,7 @@ def get_request_history() -> RequestListResponse:
                 risk_level=report.report["request"]["riskLevel"],
                 decision=report.report["decision"],
                 review_status=map_review_result_label(review),
+                submitter=report.report["request"].get("submitter", "anonymous"),
             )
         )
 

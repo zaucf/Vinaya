@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import Response, StreamingResponse
 
 from apps.api.vinaya_api.llm import LLMConfigurationError, LLMRequestError
 from apps.api.vinaya_api.schemas import (
@@ -13,6 +13,8 @@ from apps.api.vinaya_api.schemas import (
     LLMProviderItem,
     LLMProvidersResponse,
     LLMProviderTestResponse,
+    NotificationItem,
+    NotificationListResponse,
     RequestListResponse,
     RequestModelItem,
     RequestModelsResponse,
@@ -21,6 +23,7 @@ from apps.api.vinaya_api.schemas import (
     ReviewPayload,
     ReviewResponse,
     RulesConfigResponse,
+    UnreadCountResponse,
     UpdateLLMProviderPayload,
     UpdateRequestModelPayload,
 )
@@ -47,6 +50,13 @@ from apps.api.vinaya_api.services.reviews import fetch_review, fetch_review_list
 from apps.api.vinaya_api.services.rules import get_rules_config, save_rules_config
 from apps.api.vinaya_api.services.confessions import get_confessions
 from apps.api.vinaya_api.services.cases import get_cases
+from apps.api.vinaya_api.services.notifications import (
+    get_notifications,
+    get_unread_count,
+    mark_all_as_read,
+    mark_as_read,
+)
+from apps.api.vinaya_api.services.export import export_csv, export_json, export_pdf
 
 app = FastAPI(title="Vinaya API", version="0.1.0")
 app.add_middleware(
@@ -54,6 +64,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -219,3 +231,62 @@ def list_confessions() -> ConfessionListResponse:
 @app.get("/api/cases", response_model=CaseListResponse)
 def list_cases(domain: str | None = None, risk_level: str | None = None) -> CaseListResponse:
     return get_cases(domain=domain, risk_level=risk_level)
+
+
+# ── 通知 API ──
+
+
+@app.get("/api/notifications", response_model=NotificationListResponse)
+def list_notifications(is_read: bool | None = None) -> NotificationListResponse:
+    return get_notifications(is_read=is_read)
+
+
+@app.get("/api/notifications/unread-count", response_model=UnreadCountResponse)
+def notifications_unread_count() -> UnreadCountResponse:
+    return get_unread_count()
+
+
+@app.put("/api/notifications/read-all")
+def read_all_notifications() -> dict:
+    count = mark_all_as_read()
+    return {"marked": count}
+
+
+@app.put("/api/notifications/{notification_id}/read", response_model=NotificationItem)
+def read_notification(notification_id: str) -> NotificationItem:
+    item = mark_as_read(notification_id)
+    if item is None:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    return item
+
+
+# ── 导出 API ──
+
+
+@app.get("/api/export")
+def export_data(
+    format: str = Query(default="json", pattern="^(json|csv|pdf)$"),
+    date_from: str | None = Query(default=None, alias="from"),
+    date_to: str | None = Query(default=None, alias="to"),
+) -> Response:
+    if format == "csv":
+        content = export_csv(date_from=date_from, date_to=date_to)
+        return Response(
+            content=content,
+            media_type="text/csv; charset=utf-8",
+            headers={"Content-Disposition": "attachment; filename=vinaya-audit.csv"},
+        )
+    if format == "pdf":
+        content = export_pdf(date_from=date_from, date_to=date_to)
+        return Response(
+            content=content,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "attachment; filename=vinaya-audit.pdf"},
+        )
+    # default: json
+    content = export_json(date_from=date_from, date_to=date_to)
+    return Response(
+        content=content,
+        media_type="application/json; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=vinaya-audit.json"},
+    )

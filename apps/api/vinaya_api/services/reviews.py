@@ -6,6 +6,7 @@ from uuid import uuid4
 from apps.api.vinaya_api.repository import get_report, get_review, list_reviews, save_review
 from apps.api.vinaya_api.schemas import ReviewListResponse, ReviewPayload, ReviewResponse
 from apps.api.vinaya_api.services.confessions import create_confession
+from apps.api.vinaya_api.services.notifications import create_notification as create_notif
 
 
 def submit_review(request_id: str, payload: ReviewPayload) -> ReviewResponse:
@@ -31,6 +32,12 @@ def submit_review(request_id: str, payload: ReviewPayload) -> ReviewResponse:
                 original_decision=report_data.get("decision", "unknown"),
                 override_comment=payload.comment,
                 reviewer=payload.reviewer,
+            )
+            create_notif(
+                request_id=request_id,
+                title=f"复核推翻 — {report_data.get('request', {}).get('title', request_id)}",
+                message=f"复核人 {payload.reviewer} 推翻了系统建议：{payload.comment}",
+                notification_type="override",
             )
 
     return saved

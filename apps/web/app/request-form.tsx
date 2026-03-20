@@ -50,6 +50,7 @@ export function RequestForm() {
   const router = useRouter();
   const [models, setModels] = useState<RequestModel[]>([]);
   const [selectedModelId, setSelectedModelId] = useState("");
+  const [submitter, setSubmitter] = useState("");
   const [title, setTitle] = useState("");
   const [domain, setDomain] = useState("content-moderation");
   const [riskLevel, setRiskLevel] = useState<RiskLevel>("auto");
@@ -142,6 +143,7 @@ export function RequestForm() {
       request_text: requestText,
       context,
       request_model_id: selectedModelId || null,
+      submitter: submitter || "anonymous",
     };
 
     setStreamPayload(payload);
@@ -237,6 +239,15 @@ export function RequestForm() {
   return (
     <form className="card form" onSubmit={handleSubmit}>
       <h2 className="section-title">提交判断请求</h2>
+      <label className="field">
+        <span>提交人</span>
+        <input
+          value={submitter}
+          onChange={(event) => setSubmitter(event.target.value)}
+          placeholder="输入你的名字（留空则为 anonymous）"
+          maxLength={80}
+        />
+      </label>
       <label className="field">
         <span>请求模型</span>
         <select

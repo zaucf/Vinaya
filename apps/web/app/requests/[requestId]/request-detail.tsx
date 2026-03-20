@@ -121,6 +121,7 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
             <h2>请求内容</h2>
             <ul className="list">
               <li><strong>标题</strong>：{report.request.title}</li>
+              <li><strong>提交人</strong>：{report.request.submitter ?? "anonymous"}</li>
               <li><strong>领域</strong>：{DOMAIN_LABELS[report.request.domain] ?? report.request.domain}</li>
               <li><strong>风险等级</strong>：{RISK_LEVEL_LABELS[report.request.riskLevel] ?? report.request.riskLevel}</li>
               <li><strong>请求内容</strong>：{report.request.requestText}</li>

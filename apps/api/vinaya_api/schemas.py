@@ -100,6 +100,7 @@ class CreateRequestPayload(BaseModel):
     risk_level: Literal["auto", "low", "medium", "high"]
     context: str = Field(default="", max_length=4000)
     request_model_id: str | None = Field(default=None, max_length=80)
+    submitter: str = Field(default="anonymous", max_length=80)
 
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -144,6 +145,7 @@ class RequestListItem(BaseModel):
     risk_level: Literal["low", "medium", "high"]
     decision: Literal["allow", "defer", "stop"]
     review_status: str
+    submitter: str = "anonymous"
 
 
 class RequestListResponse(BaseModel):
@@ -231,3 +233,37 @@ class CaseItem(BaseModel):
 
 class CaseListResponse(BaseModel):
     items: list[CaseItem]
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# 通知（P1-2）
+# ────────────────────────────────────────────────────────────────────────────
+
+
+class NotificationItem(BaseModel):
+    notification_id: str
+    request_id: str
+    title: str
+    message: str
+    type: Literal["defer", "stop", "human_review", "override"]
+    is_read: bool = False
+    created_at: str
+
+
+class NotificationListResponse(BaseModel):
+    items: list[NotificationItem]
+
+
+class UnreadCountResponse(BaseModel):
+    count: int
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# 导出（P1-3）
+# ────────────────────────────────────────────────────────────────────────────
+
+
+class ExportQuery(BaseModel):
+    format: Literal["json", "csv", "pdf"] = "json"
+    date_from: str | None = None
+    date_to: str | None = None

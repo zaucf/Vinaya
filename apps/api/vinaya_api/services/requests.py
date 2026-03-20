@@ -13,6 +13,7 @@ from apps.api.vinaya_api.schemas import (
     RequestReportResponse,
 )
 from apps.api.vinaya_api.services.rules import get_rules_config
+from apps.api.vinaya_api.services.notifications import create_notification
 from packages.engine.vinaya_engine import run_vinaya_llm_pipeline, run_vinaya_pipeline
 from packages.engine.vinaya_engine.pipeline import mock_classify_risk
 from packages.engine.vinaya_engine.precept_enforcer import enforce_precepts
@@ -104,6 +105,7 @@ def create_request(payload: CreateRequestPayload) -> RequestReportResponse:
         "domain": payload.domain,
         "riskLevel": risk_level,
         "context": payload.context or "",
+        "submitter": payload.submitter or "anonymous",
     }
 
     use_mock_engine = os.getenv("VINAYA_USE_MOCK_ENGINE", "false").lower() == "true"
@@ -131,7 +133,25 @@ def create_request(payload: CreateRequestPayload) -> RequestReportResponse:
     summary = _build_summary(report, request_id)
 
     response = RequestReportResponse(request_id=request_id, report=report, summary=summary)
-    return save_report(response)
+    saved = save_report(response)
+
+    # 自动通知
+    if summary.decision in ("defer", "stop"):
+        create_notification(
+            request_id=request_id,
+            title=f"判断结果：{'缓行' if summary.decision == 'defer' else '止行'} — {payload.title}",
+            message=summary.reasoning,
+            notification_type=summary.decision,
+        )
+    if summary.human_review_required and summary.decision not in ("defer", "stop"):
+        create_notification(
+            request_id=request_id,
+            title=f"需人工复核 — {payload.title}",
+            message=summary.reasoning,
+            notification_type="human_review",
+        )
+
+    return saved
 
 
 def fetch_request(request_id: str) -> RequestReportResponse | None:

@@ -9,6 +9,7 @@ type HistoryItem = {
   risk_level: string;
   decision: string;
   review_status: string;
+  submitter?: string;
 };
 
 export function HistoryList({ items }: { items: HistoryItem[] }) {
@@ -102,7 +103,7 @@ export function HistoryList({ items }: { items: HistoryItem[] }) {
             >
               <div>
                 <strong>{item.title}</strong>
-                <p className="muted">{item.domain}</p>
+                <p className="muted">{item.domain}{item.submitter && item.submitter !== "anonymous" ? ` · 提交人: ${item.submitter}` : ""}</p>
               </div>
               <div>
                 <span className="pill">{item.risk_level}</span>
