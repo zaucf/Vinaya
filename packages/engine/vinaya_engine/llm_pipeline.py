@@ -4,6 +4,7 @@ import json
 from collections.abc import Callable
 from typing import Any
 
+from .deliberation import run_multirole_deliberation
 from .pipeline import rank_risk
 from .types import JudgmentReport, VinayaRequest
 
@@ -83,6 +84,7 @@ def run_vinaya_llm_pipeline(
     *,
     chat_fn: Callable[[str, str], dict[str, Any]] | None = None,
     rules_provider: Callable | None = None,
+    use_multirole: bool = True,
 ) -> JudgmentReport:
     """运行 Vinaya LLM 判断流程。
 
@@ -91,6 +93,7 @@ def run_vinaya_llm_pipeline(
         chat_fn: LLM 调用函数，签名为 (system_prompt: str, user_prompt: str) -> dict
                  如果为 None，需要由调用方提供（向后兼容）
         rules_provider: 规则配置加载函数
+        use_multirole: 是否启用多角色辩义（默认 True）
 
     Returns:
         完整的判断报告
@@ -119,7 +122,7 @@ def run_vinaya_llm_pipeline(
 
     reasoning_summary = result.get("reasoningSummary") or f"综合判断为 {overall_risk} 风险。"
 
-    return {
+    report: JudgmentReport = {
         "request": request,
         "intention": result["intention"],
         "causality": result["causality"],
@@ -130,3 +133,16 @@ def run_vinaya_llm_pipeline(
         "decision": result["decision"],
         "reasoningSummary": reasoning_summary,
     }
+
+    # 多角色辩义：替换原始辩义结果
+    if use_multirole:
+        prior_stages = {
+            "intention": result["intention"],
+            "causality": result["causality"],
+            "precepts": result["precepts"],
+        }
+        report["deliberation"] = run_multirole_deliberation(
+            request, prior_stages, chat_fn,
+        )
+
+    return report

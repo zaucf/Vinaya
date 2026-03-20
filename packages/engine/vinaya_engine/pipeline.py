@@ -106,6 +106,32 @@ def run_deliberation(request: VinayaRequest) -> DeliberationResult:
         else "转人工复核后再决定",
         "dissentNotes": ["当前信息量有限，不宜把自动结论包装成最终裁定。"],
         "deliberationRisk": "medium" if request["riskLevel"] == "low" else request["riskLevel"],
+        "roleDebates": [
+            {
+                "role": "advocate",
+                "stance": "请求目标明确，执行收益大于风险",
+                "reasoning": "从请求方立场看，该请求有清晰的业务目标，"
+                "在受控条件下执行可带来显著效率提升，风险可通过回退机制管控。",
+                "suggestedOption": "先小范围试行并设置回退条件",
+            },
+            {
+                "role": "critic",
+                "stance": "信息不充分，盲目执行可能造成不可逆后果",
+                "reasoning": "当前对受影响方的评估仍有盲点，"
+                "一旦出现误判可能扩大影响面，建议优先补充信息后再决策。",
+                "suggestedOption": "转人工复核后再决定",
+            },
+            {
+                "role": "moderator",
+                "stance": "综合两方意见，建议在有限范围内审慎推进",
+                "reasoning": "倡导者指出的收益合理，批评者的风险担忧也有依据。"
+                "折中方案是小范围试行，同时保留人工复核通道。",
+                "suggestedOption": "先小范围试行并设置回退条件"
+                if request["riskLevel"] == "low"
+                else "转人工复核后再决定",
+            },
+        ],
+        "consensusLevel": 0.82 if request["riskLevel"] == "low" else 0.61,
     }
 
 

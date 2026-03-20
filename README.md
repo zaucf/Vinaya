@@ -302,6 +302,52 @@ class JudgmentResult:
 
 更多示例参见 `docs/sdk_examples.py`。
 
+### SDK 当前限制与计划增强
+
+当前 SDK 已满足基本集成需求，以下是已识别的增强方向：
+
+| 能力 | 现状 | 计划 |
+|------|------|------|
+| 异步调用 | 仅同步 `judge()` | 增加 `AsyncVinayaClient` 和 `async judge()` |
+| 流式推送 | API 支持 SSE，SDK 未暴露 | 增加 `judge_stream()` 逐阶段回调 |
+| 批量判断 | 不支持 | 增加 `judge_batch()` 并发处理 |
+| 复核 API | 仅 Web 界面可操作 | SDK 增加 `submit_review()` |
+| 装饰器模式 | 不支持 | 增加 `@vinaya.guard()` 函数守卫 |
+| 框架中间件 | 不支持 | 提供 FastAPI / Django 中间件 |
+
+#### 装饰器模式（计划中）
+
+```python
+from vinaya import VinayaLocalClient
+
+vinaya = VinayaLocalClient(use_mock=True)
+
+@vinaya.guard(domain="finance-approval", risk_level="high")
+def approve_large_payment(amount: float, recipient: str) -> dict:
+    """只有通过 Vinaya 判断的请求才会真正执行。"""
+    return {"status": "approved", "amount": amount, "to": recipient}
+
+# 调用时自动触发判断，defer/stop 会抛出异常或返回拦截结果
+result = approve_large_payment(50000, "vendor-abc")
+```
+
+#### 流式推送（计划中）
+
+```python
+client = VinayaClient(base_url="http://localhost:4010")
+
+# 逐阶段回调，适合实时 UI 或日志
+def on_stage(stage: str, label: str, result: dict):
+    print(f"[{label}] 完成")
+
+result = client.judge_stream(
+    title="高风险操作",
+    request_text="批量删除用户数据",
+    risk_level="high",
+    on_stage=on_stage,
+)
+```
+
 ## 当前版本状态
 
 MVP 核心验证目标已全部达成：
@@ -320,8 +366,19 @@ MVP 核心验证目标已全部达成：
 
 ## 下一步
 
-1. 显式状态机：让请求流转过程可观察、可暂停、可干预
-2. 补赎机制：人工推翻后触发规则修订建议和案例写入
-3. 辩义多角色拆分：从单次 LLM 调用升级为多视角 Agent 对抗
-4. 风险自动分类：根据请求内容自动预判风险等级
-5. 回退与案例库：支持判断回退和历史案例积累
+### P0 — 立即可做
+
+1. **风险自动分类**：提交请求时自动预判风险等级，减少人工误判。一次轻量 LLM 预分类即可实现
+2. **补赎 + 案例库**：人工推翻判断后，自动生成规则修订建议并写入案例库，形成"判断 → 复核 → 修正 → 进化"闭环
+
+### P1 — 短期规划
+
+3. **权限与多用户**：区分提交者与复核者身份，记录"谁提交、谁复核"，为审计链提供责任归属
+4. **通知机制**：判断结果为 defer 或 stop 时，自动通知人工负责人介入复核
+5. **导出与审计**：支持按时间范围导出完整判断链，满足合规审计需求
+
+### P2 — 中期演进
+
+6. **显式状态机**：让请求流转过程可观察、可暂停、可干预，支持在关键阶段等待人工确认后再继续
+7. **辩义多角色拆分**：从单次 LLM 调用升级为多视角 Agent 对抗，提升辩义阶段的深度与可信度
+8. **SDK 增强**：异步客户端、流式推送 `judge_stream()`、批量判断 `judge_batch()`、复核 API `submit_review()`、`@vinaya.guard()` 装饰器、FastAPI/Django 中间件

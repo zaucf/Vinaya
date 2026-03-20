@@ -125,3 +125,52 @@ class JudgmentResult:
             summary=JudgmentSummary.from_report(report),
             report=report,
         )
+
+
+@dataclass(frozen=True)
+class StageEvent:
+    """SSE 流式推送中的阶段事件。"""
+
+    event_type: str
+    """事件类型：stage_start | stage_complete | stage_update | llm_call_start | done | error"""
+
+    stage: str | None = None
+    """阶段 key"""
+
+    label: str | None = None
+    """阶段显示名称"""
+
+    index: int | None = None
+    """阶段序号"""
+
+    total: int | None = None
+    """阶段总数"""
+
+    result: dict | None = None
+    """阶段结果"""
+
+    message: str | None = None
+    """消息文本"""
+
+
+@dataclass(frozen=True)
+class ReviewResult:
+    """人工复核结果。"""
+
+    review_id: str
+    """复核 ID"""
+
+    request_id: str
+    """关联的请求 ID"""
+
+    reviewer: str
+    """复核人"""
+
+    result: str
+    """复核结果：maintain | revise | override"""
+
+    comment: str
+    """复核评语"""
+
+    created_at: str
+    """创建时间"""

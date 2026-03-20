@@ -51,11 +51,22 @@ class DeliberationOption(TypedDict):
     score: float
 
 
-class DeliberationResult(TypedDict):
+class RoleDebatePosition(TypedDict):
+    """多角色辩义中的单个角色立场。"""
+
+    role: str  # advocate | critic | moderator
+    stance: str
+    reasoning: str
+    suggestedOption: str
+
+
+class DeliberationResult(TypedDict, total=False):
     options: list[DeliberationOption]
     preferredOption: str
     dissentNotes: list[str]
     deliberationRisk: RiskLevel
+    roleDebates: list[RoleDebatePosition]
+    consensusLevel: float
 
 
 class TrialPlan(TypedDict):

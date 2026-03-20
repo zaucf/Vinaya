@@ -186,7 +186,36 @@ export async function RequestDetail({ requestId }: { requestId: string }) {
                 <li>分歧记录：{report.deliberation.dissentNotes.join("；")}</li>
               )}
               <li>辩义风险：{RISK_LEVEL_LABELS[report.deliberation.deliberationRisk] ?? report.deliberation.deliberationRisk}</li>
+              {report.deliberation.consensusLevel != null && (
+                <li>共识度：{Math.round(report.deliberation.consensusLevel * 100)}%</li>
+              )}
             </ul>
+            {report.deliberation.roleDebates && report.deliberation.roleDebates.length > 0 && (
+              <details style={{ marginTop: 12 }}>
+                <summary style={{ cursor: "pointer", fontWeight: 600 }}>多角色辩论</summary>
+                <div style={{ marginTop: 8 }}>
+                  {report.deliberation.roleDebates.map(
+                    (d: { role: string; stance: string; reasoning: string; suggestedOption: string }) => {
+                      const roleLabelMap: Record<string, string> = {
+                        advocate: "倡导者",
+                        critic: "批评者",
+                        moderator: "仲裁者",
+                      };
+                      return (
+                        <div key={d.role} style={{ marginBottom: 12, padding: "8px 12px", background: "var(--surface-2, #f5f5f5)", borderRadius: 6 }}>
+                          <p>
+                            <span className={`pill ${d.role}`}>{roleLabelMap[d.role] ?? d.role}</span>
+                            <strong style={{ marginLeft: 8 }}>{d.stance}</strong>
+                          </p>
+                          <p className="muted" style={{ margin: "4px 0" }}>{d.reasoning}</p>
+                          <p style={{ fontSize: 13 }}>推荐方案：{d.suggestedOption}</p>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              </details>
+            )}
           </article>
 
           <article className="card">

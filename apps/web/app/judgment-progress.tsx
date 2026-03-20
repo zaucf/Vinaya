@@ -21,12 +21,20 @@ const STAGE_DEFS = [
 
 type StageStatus = "pending" | "running" | "complete";
 
+interface RoleDebate {
+  role: string;
+  stance: string;
+  reasoning: string;
+  suggestedOption: string;
+}
+
 interface StageState {
   key: string;
   label: string;
   status: StageStatus;
   message?: string;
   result?: Record<string, unknown>;
+  roleUpdates?: RoleDebate[];
 }
 
 interface DonePayload {
@@ -151,6 +159,13 @@ function StageDetail({ stageKey, result }: { stageKey: string; result: Record<st
         options?: Array<{ name: string; score: number }>;
         preferredOption?: string;
         deliberationRisk?: string;
+        roleDebates?: RoleDebate[];
+        consensusLevel?: number;
+      };
+      const roleLabelMap: Record<string, string> = {
+        advocate: "倡导者",
+        critic: "批评者",
+        moderator: "仲裁者",
       };
       return (
         <div className="stage-result">
@@ -160,6 +175,22 @@ function StageDetail({ stageKey, result }: { stageKey: string; result: Record<st
               {" "}— 得分 {opt.score.toFixed(2)}
             </p>
           ))}
+          {r.consensusLevel != null && (
+            <p className="muted">共识度：{Math.round(r.consensusLevel * 100)}%</p>
+          )}
+          {r.roleDebates && r.roleDebates.length > 0 && (
+            <div className="role-debates" style={{ marginTop: 8 }}>
+              <p style={{ fontWeight: 600, marginBottom: 4 }}>多角色辩论：</p>
+              {r.roleDebates.map((d) => (
+                <div key={d.role} className="card inset-card" style={{ marginBottom: 6, padding: "8px 12px" }}>
+                  <span className={`pill ${d.role}`}>{roleLabelMap[d.role] ?? d.role}</span>
+                  <span style={{ marginLeft: 8, fontWeight: 500 }}>{d.stance}</span>
+                  <p className="muted" style={{ margin: "4px 0 0", fontSize: 13 }}>{d.reasoning}</p>
+                  <p style={{ fontSize: 13 }}>推荐：{d.suggestedOption}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       );
     }
@@ -298,6 +329,30 @@ export function JudgmentProgress({ payload, onComplete, onError }: JudgmentProgr
                 );
                 break;
 
+              case "stage_update":
+                // 多角色辩义子步骤
+                if (data.stage === "deliberation" && data.substep) {
+                  setStages((prev) =>
+                    prev.map((s) => {
+                      if (s.key !== "deliberation") return s;
+                      const updates = s.roleUpdates ?? [];
+                      return {
+                        ...s,
+                        roleUpdates: [
+                          ...updates,
+                          {
+                            role: data.substep,
+                            stance: data.stance ?? "",
+                            reasoning: data.reasoning ?? "",
+                            suggestedOption: data.suggestedOption ?? "",
+                          },
+                        ],
+                      };
+                    })
+                  );
+                }
+                break;
+
               case "stage_complete":
                 setStages((prev) =>
                   prev.map((s) =>
@@ -368,6 +423,20 @@ export function JudgmentProgress({ payload, onComplete, onError }: JudgmentProgr
           </div>
           {stage.status === "complete" && stage.result && (
             <StageDetail stageKey={stage.key} result={stage.result} />
+          )}
+          {stage.key === "deliberation" && stage.status === "running" && stage.roleUpdates && stage.roleUpdates.length > 0 && (
+            <div className="stage-result" style={{ opacity: 0.85 }}>
+              <p style={{ fontWeight: 600, marginBottom: 4 }}>角色分析中：</p>
+              {stage.roleUpdates.map((d) => {
+                const roleLabelMap: Record<string, string> = { advocate: "倡导者", critic: "批评者", moderator: "仲裁者" };
+                return (
+                  <div key={d.role} className="card inset-card" style={{ marginBottom: 6, padding: "8px 12px" }}>
+                    <span className={`pill ${d.role}`}>{roleLabelMap[d.role] ?? d.role}</span>
+                    <span style={{ marginLeft: 8 }}>{d.stance}</span>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       ))}

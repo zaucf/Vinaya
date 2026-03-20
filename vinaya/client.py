@@ -7,10 +7,19 @@
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
+from http.client import HTTPConnection, HTTPSConnection
 from urllib import error, request
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
-from vinaya.types import Decision, JudgmentResult, JudgmentSummary, RiskLevel
+from vinaya.types import (
+    Decision,
+    JudgmentResult,
+    JudgmentSummary,
+    ReviewResult,
+    RiskLevel,
+    StageEvent,
+)
 
 
 class VinayaClientError(RuntimeError):
@@ -151,3 +160,169 @@ class VinayaClient:
         """
         response = self._http_request(f"/api/requests?limit={limit}")
         return response.get("items", [])
+
+    def judge_stream(
+        self,
+        *,
+        on_stage: "Callable[[StageEvent], None] | None" = None,
+        title: str,
+        request_text: str,
+        domain: str,
+        risk_level: RiskLevel,
+        context: str = "",
+        request_model_id: str | None = None,
+    ) -> JudgmentResult:
+        """流式执行判断请求，通过回调接收阶段事件。
+
+        Args:
+            on_stage: 阶段事件回调函数
+            title: 请求标题
+            request_text: 请求文本
+            domain: 领域
+            risk_level: 风险等级
+            context: 额外上下文
+            request_model_id: 请求模型 ID（可选）
+
+        Returns:
+            判断结果
+        """
+        from collections.abc import Callable
+
+        payload = json.dumps({
+            "title": title,
+            "request_text": request_text,
+            "domain": domain,
+            "risk_level": risk_level,
+            "context": context,
+            "request_model_id": request_model_id,
+        }).encode("utf-8")
+
+        parsed = urlparse(self.base_url)
+        ConnClass = HTTPSConnection if parsed.scheme == "https" else HTTPConnection
+        host = parsed.hostname or "localhost"
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+
+        conn = ConnClass(host, port, timeout=self.timeout)
+        try:
+            conn.request(
+                "POST",
+                "/api/requests/stream",
+                body=payload,
+                headers={"Content-Type": "application/json"},
+            )
+            resp = conn.getresponse()
+            if resp.status != 200:
+                body = resp.read().decode("utf-8", errors="replace")
+                raise VinayaClientError(f"HTTP {resp.status}: {body}")
+
+            buffer = ""
+            final_data = None
+
+            while True:
+                chunk = resp.read(4096)
+                if not chunk:
+                    break
+                buffer += chunk.decode("utf-8", errors="replace")
+
+                while "\n\n" in buffer:
+                    block, buffer = buffer.split("\n\n", 1)
+                    if not block.strip():
+                        continue
+
+                    event_type = "message"
+                    data_str = ""
+                    for line in block.split("\n"):
+                        if line.startswith("event: "):
+                            event_type = line[7:]
+                        elif line.startswith("data: "):
+                            data_str = line[6:]
+
+                    if not data_str:
+                        continue
+
+                    data = json.loads(data_str)
+                    stage_event = StageEvent(
+                        event_type=event_type,
+                        stage=data.get("stage"),
+                        label=data.get("label"),
+                        index=data.get("index"),
+                        total=data.get("total"),
+                        result=data.get("result"),
+                        message=data.get("message"),
+                    )
+
+                    if on_stage is not None:
+                        on_stage(stage_event)
+
+                    if event_type == "done":
+                        final_data = data
+                    elif event_type == "error":
+                        raise VinayaClientError(data.get("message", "Unknown error"))
+        finally:
+            conn.close()
+
+        if final_data is None:
+            raise VinayaClientError("Stream ended without done event")
+
+        request_id = final_data.get("request_id", "")
+        report = final_data.get("report", {})
+        return JudgmentResult.from_report(request_id, report)
+
+    def judge_batch(
+        self,
+        requests: list[dict],
+        max_workers: int = 4,
+    ) -> list[JudgmentResult]:
+        """批量执行判断请求。
+
+        Args:
+            requests: 判断请求参数列表，每项为 judge() 的关键字参数
+            max_workers: 最大并发数
+
+        Returns:
+            判断结果列表（与输入顺序一致）
+        """
+        def _run_one(params: dict) -> JudgmentResult:
+            return self.judge(**params)
+
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = [pool.submit(_run_one, req) for req in requests]
+            return [f.result() for f in futures]
+
+    def submit_review(
+        self,
+        request_id: str,
+        *,
+        reviewer: str,
+        result: str,
+        comment: str,
+    ) -> ReviewResult:
+        """提交人工复核。
+
+        Args:
+            request_id: 请求 ID
+            reviewer: 复核人
+            result: 复核结果（maintain / revise / override）
+            comment: 复核评语
+
+        Returns:
+            复核结果
+        """
+        payload = {
+            "reviewer": reviewer,
+            "result": result,
+            "comment": comment,
+        }
+        response = self._http_request(
+            f"/api/requests/{request_id}/review",
+            method="POST",
+            body=payload,
+        )
+        return ReviewResult(
+            review_id=response.get("review_id", ""),
+            request_id=response.get("request_id", request_id),
+            reviewer=response.get("reviewer", reviewer),
+            result=response.get("result", result),
+            comment=response.get("comment", comment),
+            created_at=response.get("created_at", ""),
+        )

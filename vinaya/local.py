@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 from uuid import uuid4
 
@@ -115,6 +116,27 @@ class VinayaLocalClient:
         )
 
         return JudgmentResult.from_report(request_id, report)
+
+    def judge_batch(
+        self,
+        requests: list[dict],
+        max_workers: int = 4,
+    ) -> list[JudgmentResult]:
+        """批量执行判断请求。
+
+        Args:
+            requests: 判断请求参数列表，每项为 judge() 的关键字参数
+            max_workers: 最大并发数
+
+        Returns:
+            判断结果列表（与输入顺序一致）
+        """
+        def _run_one(params: dict) -> JudgmentResult:
+            return self.judge(**params)
+
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = [pool.submit(_run_one, req) for req in requests]
+            return [f.result() for f in futures]
 
 
 def _mock_rules_config() -> Any:

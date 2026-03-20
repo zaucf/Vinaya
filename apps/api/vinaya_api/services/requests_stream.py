@@ -282,6 +282,26 @@ async def stream_judgment_process(payload: CreateRequestPayload) -> AsyncGenerat
                 idx = SIX_START + i
                 stage = STAGES[idx]
                 await asyncio.sleep(0.15)
+
+                # 辩义阶段：推送多角色子步骤
+                if key == "deliberation" and result and result.get("roleDebates"):
+                    role_labels = {
+                        "advocate": "倡导者",
+                        "critic": "批评者",
+                        "moderator": "仲裁者",
+                    }
+                    for debate in result["roleDebates"]:
+                        role = debate.get("role", "unknown")
+                        yield _sse_event("stage_update", {
+                            "stage": "deliberation",
+                            "substep": role,
+                            "label": role_labels.get(role, role),
+                            "stance": debate.get("stance", ""),
+                            "reasoning": debate.get("reasoning", ""),
+                            "suggestedOption": debate.get("suggestedOption", ""),
+                        })
+                        await asyncio.sleep(0.1)
+
                 yield _sse_event("stage_complete", {
                     "stage": key,
                     "label": stage["label"],
