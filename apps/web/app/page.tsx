@@ -43,6 +43,9 @@ export default function HomePage() {
           <a className="button nav-button" href="/rules">
             规则说明
           </a>
+          <a className="button nav-button" href="/cases">
+            案例库
+          </a>
         </div>
       </nav>
 

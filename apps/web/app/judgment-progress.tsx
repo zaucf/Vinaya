@@ -5,8 +5,9 @@ import { useEffect, useRef, useState } from "react";
 const apiBaseUrl =
   process.env.NEXT_PUBLIC_VINAYA_API_URL ?? "http://127.0.0.1:4010";
 
-/** 9 个阶段定义 */
+/** 10 个阶段定义 */
 const STAGE_DEFS = [
+  { key: "classify", label: "风险预判" },
   { key: "intention", label: "发心" },
   { key: "causality", label: "观缘" },
   { key: "precepts", label: "持戒" },
@@ -72,6 +73,19 @@ function parseSSE(chunk: string): Array<{ event: string; data: string }> {
 /** 渲染阶段详情 */
 function StageDetail({ stageKey, result }: { stageKey: string; result: Record<string, unknown> }) {
   switch (stageKey) {
+    case "classify": {
+      const r = result as { risk_level?: string; skipped?: boolean };
+      const levelLabel = r.risk_level === "low" ? "低" : r.risk_level === "medium" ? "中" : "高";
+      return (
+        <div className="stage-result">
+          {r.skipped ? (
+            <p><strong>手动指定风险等级：</strong><span className={`pill ${r.risk_level}`}>{levelLabel}风险</span></p>
+          ) : (
+            <p><strong>预判风险等级：</strong><span className={`pill ${r.risk_level}`}>{levelLabel}风险</span></p>
+          )}
+        </div>
+      );
+    }
     case "intention": {
       const r = result as {
         primaryIntent?: string;

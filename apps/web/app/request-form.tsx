@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { JudgmentProgress } from "./judgment-progress";
 
 const riskLevels = [
+  { value: "auto", label: "自动（推荐）" },
   { value: "low", label: "低风险" },
   { value: "medium", label: "中风险" },
   { value: "high", label: "高风险" },
@@ -51,7 +52,7 @@ export function RequestForm() {
   const [selectedModelId, setSelectedModelId] = useState("");
   const [title, setTitle] = useState("");
   const [domain, setDomain] = useState("content-moderation");
-  const [riskLevel, setRiskLevel] = useState<RiskLevel>("medium");
+  const [riskLevel, setRiskLevel] = useState<RiskLevel>("auto");
   const [requestText, setRequestText] = useState("");
   const [context, setContext] = useState("");
   const [loadingModels, setLoadingModels] = useState(true);

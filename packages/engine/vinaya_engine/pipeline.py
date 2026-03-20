@@ -28,6 +28,24 @@ def rank_risk(levels: list[RiskLevel]) -> RiskLevel:
     return "low"
 
 
+# ── 风险自动分类（Mock 模式）──
+
+_HIGH_KEYWORDS = ["删除", "批量", "高风险", "永久", "不可逆", "资金", "转账", "裁员", "解雇", "终止"]
+_LOW_KEYWORDS = ["查看", "查询", "报告", "统计", "预览", "测试"]
+
+
+def mock_classify_risk(title: str, request_text: str, domain: str) -> str:
+    """Mock 模式下根据关键词简单分类风险等级。"""
+    combined = f"{title} {request_text}".lower()
+    for kw in _HIGH_KEYWORDS:
+        if kw in combined:
+            return "high"
+    for kw in _LOW_KEYWORDS:
+        if kw in combined:
+            return "low"
+    return "medium"
+
+
 def run_intention(request: VinayaRequest) -> IntentionResult:
     return {
         "primaryIntent": request.get("title") or "澄清该请求的真实目标",

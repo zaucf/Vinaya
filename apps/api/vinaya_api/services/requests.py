@@ -4,7 +4,7 @@ import os
 from functools import partial
 from uuid import uuid4
 
-from apps.api.vinaya_api.llm import chat_json
+from apps.api.vinaya_api.llm import chat_json, classify_risk
 from apps.api.vinaya_api.repository import get_report, get_request_model, save_report
 from apps.api.vinaya_api.schemas import (
     CreateRequestPayload,
@@ -14,6 +14,7 @@ from apps.api.vinaya_api.schemas import (
 )
 from apps.api.vinaya_api.services.rules import get_rules_config
 from packages.engine.vinaya_engine import run_vinaya_llm_pipeline, run_vinaya_pipeline
+from packages.engine.vinaya_engine.pipeline import mock_classify_risk
 from packages.engine.vinaya_engine.precept_enforcer import enforce_precepts
 
 
@@ -80,13 +81,28 @@ def _build_summary(report: dict, request_id: str) -> JudgmentSummaryResponse:
 
 def create_request(payload: CreateRequestPayload) -> RequestReportResponse:
     request_id = f"vinaya-{uuid4().hex[:12]}"
+
+    use_mock_engine = os.getenv("VINAYA_USE_MOCK_ENGINE", "false").lower() == "true"
+
+    # 自动风险分类
+    risk_level = payload.risk_level
+    if risk_level == "auto":
+        llm_provider_id = _get_llm_provider_id(payload.request_model_id)
+        if use_mock_engine:
+            risk_level = mock_classify_risk(payload.title, payload.request_text, payload.domain)
+        else:
+            risk_level = classify_risk(
+                payload.title, payload.request_text, payload.domain,
+                llm_provider_id=llm_provider_id,
+            )
+
     request = {
         "requestId": request_id,
         "requestModelId": payload.request_model_id or "manual",
         "title": payload.title,
         "requestText": payload.request_text,
         "domain": payload.domain,
-        "riskLevel": payload.risk_level,
+        "riskLevel": risk_level,
         "context": payload.context or "",
     }
 

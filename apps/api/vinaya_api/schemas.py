@@ -97,7 +97,7 @@ class CreateRequestPayload(BaseModel):
     title: str = Field(min_length=1, max_length=120)
     request_text: str = Field(min_length=1, max_length=4000)
     domain: str = Field(min_length=1, max_length=80)
-    risk_level: Literal["low", "medium", "high"]
+    risk_level: Literal["auto", "low", "medium", "high"]
     context: str = Field(default="", max_length=4000)
     request_model_id: str | None = Field(default=None, max_length=80)
 
@@ -213,3 +213,21 @@ class LLMProviderTestResponse(BaseModel):
     provider_id: str
     message: str
     models: list[str] | None = None  # 可用模型列表
+
+
+class CaseItem(BaseModel):
+    confession_id: str
+    request_id: str
+    domain: str
+    risk_level: str
+    original_decision: str
+    override_comment: str
+    reviewer: str
+    action_taken: str
+    created_at: str
+    title: str = ""
+    reasoning_summary: str = ""
+
+
+class CaseListResponse(BaseModel):
+    items: list[CaseItem]

@@ -127,3 +127,50 @@ def chat_json(
         return json.loads(content)
     except json.JSONDecodeError as exc:
         raise LLMRequestError(f"LLM did not return valid JSON: {content}") from exc
+
+
+# ── 风险自动分类 ──
+
+CLASSIFY_PROMPT = (
+    "你是一个风险评估助手。根据以下请求内容，判断风险等级。\n"
+    "只输出 JSON：{\"risk_level\": \"low\"|\"medium\"|\"high\"}\n\n"
+    "考虑因素：\n"
+    "- 是否涉及不可逆操作（删除、永久修改、资金转移等）\n"
+    "- 影响面大小（单人/团队/全公司/公众）\n"
+    "- 是否需要人工确认才能安全执行\n"
+    "- 是否涉及敏感领域（法律、财务、人事、安全）\n\n"
+    "低风险：影响面小、可回退、不涉及敏感操作\n"
+    "中风险：有一定影响面、需要关注但可控\n"
+    "高风险：不可逆、影响面大、涉及敏感领域"
+)
+
+
+def classify_risk(
+    title: str,
+    request_text: str,
+    domain: str,
+    *,
+    llm_provider_id: str | None = None,
+) -> str:
+    """使用 LLM 自动分类风险等级。
+
+    Returns:
+        "low" | "medium" | "high"
+    """
+    user_prompt = (
+        f"请求标题：{title}\n"
+        f"领域：{domain}\n"
+        f"请求内容：{request_text}"
+    )
+    try:
+        result = chat_json(
+            system_prompt=CLASSIFY_PROMPT,
+            user_prompt=user_prompt,
+            llm_provider_id=llm_provider_id,
+        )
+        level = result.get("risk_level", "medium")
+        if level in ("low", "medium", "high"):
+            return level
+        return "medium"
+    except (LLMConfigurationError, LLMRequestError):
+        return "medium"

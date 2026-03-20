@@ -4,6 +4,7 @@ from fastapi.responses import StreamingResponse
 
 from apps.api.vinaya_api.llm import LLMConfigurationError, LLMRequestError
 from apps.api.vinaya_api.schemas import (
+    CaseListResponse,
     ConfessionListResponse,
     CreateLLMProviderPayload,
     CreateRequestModelPayload,
@@ -45,6 +46,7 @@ from apps.api.vinaya_api.services.requests_stream import stream_judgment_process
 from apps.api.vinaya_api.services.reviews import fetch_review, fetch_review_list, submit_review
 from apps.api.vinaya_api.services.rules import get_rules_config, save_rules_config
 from apps.api.vinaya_api.services.confessions import get_confessions
+from apps.api.vinaya_api.services.cases import get_cases
 
 app = FastAPI(title="Vinaya API", version="0.1.0")
 app.add_middleware(
@@ -212,3 +214,8 @@ def update_rules(payload: RulesConfigResponse) -> RulesConfigResponse:
 @app.get("/api/confessions", response_model=ConfessionListResponse)
 def list_confessions() -> ConfessionListResponse:
     return get_confessions()
+
+
+@app.get("/api/cases", response_model=CaseListResponse)
+def list_cases(domain: str | None = None, risk_level: str | None = None) -> CaseListResponse:
+    return get_cases(domain=domain, risk_level=risk_level)
